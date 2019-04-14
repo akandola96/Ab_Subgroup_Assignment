@@ -1,4 +1,3 @@
-
 def fasta2pir(infile,outfile):
     """Converts a FASTA formatted file to PIR format. Required format of 
     hsubgroup.   
