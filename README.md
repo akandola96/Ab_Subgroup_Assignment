@@ -59,7 +59,7 @@ The **count_xml_blast_records** function simply counts the number of BLAST recor
 
 |Query ID|Alignment Description|Query Sequence Residues|
 |-----|-----|-----|
-|Anti-A\00001|refseq5115 \ mus musculus \ IGHV1-21|QVQLVQ....|
-|Anti-B\00501|refseq3113\mus musculus\IGKV1-39|EVLKST...|
+|Anti-A\00001|refseq5115\mus musculus\IGHV1-21*04|QVQLVQ...|
+|Anti-B\00501|refseq3113\mus musculus\IGKV1-39*02|EVLKST...|
 
 
