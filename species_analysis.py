@@ -1,41 +1,51 @@
-#%%
-#works as of 22/02. Does what it needs to do #outputs to console      
 def check_species_assignment(in_file,out_file):
-    """Works out MCC on a species basis rather than subgroup"""
-    #e.g. combined_full_results.csv
+    """Works out MCC on a species basis rather than subgroup
+    
+    in_file = combined full results file 
+        Produced by a species' sequences against a hsubgroup datafile 
+        containing all subgroup profiles for all species. Each full results file
+        produced for each species is the joined together. The final column 
+        of this file contains the actual organism. This is compared to 
+        hsubgroup's assignment to derive an MCC
+    out_file = named output file (.csv)
+    
+    """
     import csv
-    #import sys
-    #sys.stdout = open(out_file,'a+')
+    import sys
+    sys.stdout = open(out_file,'a+')
     with open(in_file) as csv_in:
         reader = csv.reader(csv_in)
         
-        organisms = ['Homo sapiens','Mus musculus','Oryctolagus cuniculus','Macaca mulatta','Gallus']
+        organisms = ['Homo sapiens','Mus musculus','Oryctolagus cuniculus',
+                        'Macaca mulatta','Gallus']
         
         for organism in organisms:
             csv_in.seek(0)
-            TP = 0 #confusion matrix variables
+            TP = 0 
             FP = 0 
             FN = 0 
             TN = 0 
-            my_count = 0 
-        
+            
             for row in reader:
-               actual_org = str(row[8]) #changed from 7 to 8 on 04/04
+               actual_org = str(row[8]) 
                predicted_org = str(row[1])
-               
-                   
+                
                if organism in predicted_org and \
                organism in actual_org:
                    TP+=1
+
                elif organism not in predicted_org and \
                organism in actual_org:
                    FN+=1
+
                elif organism in predicted_org and \
                organism not in actual_org:
                    FP+=1
+
                elif organism not in predicted_org and \
                organism not in actual_org:
                    TN+=1
+
                else:
                    continue
                
@@ -48,31 +58,32 @@ def check_species_assignment(in_file,out_file):
             print(organism,'MCC:', org_MCC)
             print('TP:',TP,'FP:',FP,'FN:', FN ,'TN:', TN )
             print(TP+FP+FN+TN,'\n')
-#%%
+
 def determine_species_misassignment_master(in_file):
     """Works out which species were assigned as which"""
-    query_organisms =['Homo sapiens', 'Mus musculus','Macaca mulatta','Oryctolagus cuniculus','Gallus']
-    
+
+    query_organisms =['Homo sapiens', 'Mus musculus','Macaca mulatta',
+                        'Oryctolagus cuniculus','Gallus']
     for organism in query_organisms:
-        determine_species_misassignment(in_file,organism)
+        determine_species_misassignment_FNs(in_file,organism)
 
 def determine_species_misassignment_FNs(in_file, organism):
-    #works out which species gets misclassified as which most often (FNs only)
+    """Determines which species get misclassified as the other, FNs only
+    
+    Outputs to console. No need for dedicated output file
+    
+    """
     import csv
-    #import sys
-    #sys.stdout = open(out_file,'a+')
     with open(in_file) as csv_in:
         reader = csv.reader(csv_in)
         macaca = 0 
         mouse = 0 
         oryctolagus = 0 
         homo = 0
-        gallus = 0 
-        
-        
+        gallus = 0  
         for row in reader:
             assigned_org = str(row[1])
-            actual_org = str(row[8]) #changed from 7 to 8 on 04/04
+            actual_org = str(row[8]) 
                         
             if organism not in assigned_org and organism in actual_org:
                 if 'Macaca mulatta' in assigned_org:
@@ -86,8 +97,8 @@ def determine_species_misassignment_FNs(in_file, organism):
                 elif 'Gallus' in assigned_org:
                     gallus+=1
                     
-    
     print('Query organism:', organism)
-    print('Macaca:',macaca,'Mouse:', mouse,'Oryctolagus:', oryctolagus, 'Homo:',homo,'Gallus: ',gallus)
+    print('Macaca:',macaca,'Mouse:', mouse,'Oryctolagus:', oryctolagus, 
+            'Homo:',homo,'Gallus: ',gallus)
     print('Sum:',macaca+mouse+oryctolagus+homo+gallus)
     print('\n')
