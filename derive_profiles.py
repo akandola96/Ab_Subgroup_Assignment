@@ -52,11 +52,12 @@ def get_sentences(locus, in_file, organism):
     return locus_dict
   
 def get_numerics(locus,organism, in_file):
-    """Determines the number of subgroups in each chain
+    """Determines the number of subgroups in each locus being examined.
     
-    locus = Kappa, Lambda or Heavy
-    organism = organism name e.g. Mus musculus 
+    locus = Kappa, Lambda or Heavy.
+    organism = organism name e.g. Mus musculus.
     in_file = file containing query seqeunces matched to their BLAST record
+        (this is the blout_queries file)
     
     BLAST record contains subgroup assignment e.g. IGHV1, IGHV2...
     Function works by creating a string e.g. IGHV1, IGHV2 ... IGHV30 for each
@@ -104,18 +105,17 @@ def get_numerics(locus,organism, in_file):
 def get_matrices(locus, infile, out_file,query_organism,freq_type,matrix_type):
     """Master function to derive the profiles of a loci's subgroups.
     
-    locus = Heavy, Lambda or Kappa
-    infile = file containing query seqeunces matched to their BLAST record (bloutqueries)
+    locus = 'Heavy', 'Lambda' or 'Kappa'. Has to be run for each one (str).
+    infile = file containing query seqeunces matched to their BLAST record 
+            (bloutqueries)
     out_file = named output file cotnaining subgroup profiles (.txt)
-    query_organism = organism 
-    freq_type = 'log' or 'normal'
-    matrix_type = '2line' OR 'full'
+    query_organism = organism e.g. Mus musculus (str)
+    freq_type = 'log' OR 'normal' (str)
+    matrix_type = '2line' OR 'full' (str)
     
     Uses the get_numerics function to determine how many subgroups should be
     evaluated. 
     Adds formatting and subgroup titles.
-    
-    05/04 Need to amend so accepts 2 line or full as arguments.
     
     """    
     import sys 
@@ -128,44 +128,46 @@ def get_matrices(locus, infile, out_file,query_organism,freq_type,matrix_type):
         upper_chain_type = chain_type.upper()
         subg_num = subgroup[4:]             #get subgroup number 
         try:
+            #Write titles
             sys.stdout.write('>' + upper_chain_type + ',' + '  ' 
                              + subg_num +',' + '\n')
             sys.stdout.write('"' + organism + ' ' + chain_type + ' ' 
                              + 'Chain' + ' ' + subg_num + '"' + ',')
+            #Get profiles
             if matrix_type == '2line':
-                derive_matrices_2line_updated(infile,subgroup,freq_type,out_file)
+                derive_matrices_2line(infile,subgroup,freq_type,out_file)
             elif matrix_type == 'full':
                 derive_matrices_full(infile,subgroup,freq_type,out_file)
+            #Formatting
             sys.stdout.write('//' + '\n')
         except Exception as e:
             print('ERROR OCCURRED')
             print(e)            
 
-def derive_matrices_2line_updated(in_file, query_subgroup,freq_type,out_file):      
-    """Generates a two line profile for a subgroup
+def derive_matrices_2line(in_file, query_subgroup,freq_type,out_file):      
+    """Generates a two line profile for a subgroup.
     
     in_file = file containing query seqeunces matched to their BLAST record
-    query_subgroup = subgroup being evaluated 
+                (blout_queries file)
+    query_subgroup = subgroup being evaluated (str)
     out_fiile = output file (.txt)
     
     tops = list of most common residues 
     freqs = list of most common residue frequencies 
     tops2 = list of 2nd most common residues
-    freqs2 = lisf of 2nd most common residue frequencies
+    freqs2 = list of 2nd most common residue frequencies
     
     For each subgroup a list for each position is made. Every sequence's 
-    residue at this position is recorded in the list.
+    residue at this position is recorded in it's respective list.
     Missing  residues (X) are removed from each position list, however the 
-    size of the list is maintained.
-    Determines the most commmon residue in each position list. Iterate through
-    each position list to get the most common residue. Build a profile based
-    on this. 
+    size of original length of the list is maintained.
+    Iterates through each position list to get the most common residue. 
+    Builds a profile based on this. 
     
     Lambda function removes the most common residue from each position list 
     and the second most common residue for each position is then calculated.    
     
     Frequency of each residue is recorded to 3 d.p.
-    
     """             
     import csv 
     import sys
@@ -174,7 +176,7 @@ def derive_matrices_2line_updated(in_file, query_subgroup,freq_type,out_file):
     with open(in_file,'r') as cinput:
         reader = csv.reader(cinput)
         
-        #initialise position lists
+        #Initialise position lists
         pos1 = []
         pos2 = []
         pos3 = []
@@ -197,32 +199,28 @@ def derive_matrices_2line_updated(in_file, query_subgroup,freq_type,out_file):
         pos20 = []
         pos21 = []
         
-        #initialise list of lists
         list_names = [pos1,pos2,pos3,pos4, pos5, pos6, pos7, pos8, pos9, pos10,                     
                       pos11, pos12, pos13, pos14, pos15, pos16, pos17, pos18, 
-                      pos19, pos20, pos21]
-        
-        #initialise lists 
+                      pos19, pos20, pos21] 
         tops = []       
         tops2 = []
         freqs = []      
         freqs2 = []
         
-        #fill position lists        
+        #Fill position lists        
         for row in reader:
-            subgroup = str(row[1])
+            subgroup = str(row[1])         #Row contains BLAST record
             
             #if the query subgroup is found in the blast record
             if phrases(query_subgroup,subgroup) == True:
                 x = 0                 
             #add 1st residue to pos1 list, 2nd residue to pos2 list...
                 for i in list_names:
-                    residues = list(row[2])         #residues
+                    residues = list(row[2])         
                     i.append(residues[x])       #res 1 into list 1 etc.        
                     x+=1   
                                
-        #determine profiles        
-        #Iterate through position lists            
+        #Determine profiles                   
         for i in list_names:
             list_length = len(i)            #determine number of seqs used
             i = [x for x in i if x != 'X']  #remove X's from list
@@ -270,13 +268,14 @@ def derive_matrices_2line_updated(in_file, query_subgroup,freq_type,out_file):
         sys.stdout.write('\n' + "".join(tops) + ',' +'\n') 
         sys.stdout.write(",".join(str(x) for x in formatted_freqs) + ',' +'\n')                 
         sys.stdout.write("".join(tops2) + ',' +'\n') 
-        sys.stdout.write(",".join(str(x) for x in formatted_freqs2) +'\n')       
-#%%      
+        sys.stdout.write(",".join(str(x) for x in formatted_freqs2) +'\n') 
+
 def derive_matrices_full(in_file, query_subgroup,freq_type,out_file): 
-    """Generates a full profile for a subgroup
+    """Generates a full profile for a subgroup.
     
     in_file = file containing query seqeunces matched to their BLAST record
-    query_subgroup = subgroup being evaluated 
+                (blout_queries file)
+    query_subgroup = subgroup being evaluated (str)
     out_fiile = output file (.txt)
     
     For each subgroup a list for each position is made. Every sequence's 
