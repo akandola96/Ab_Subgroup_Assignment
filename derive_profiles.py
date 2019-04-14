@@ -7,36 +7,40 @@ def phrases(phrase,text):
     """    
     import re
     return re.search(r"\b{}\b".format(phrase), text, re.IGNORECASE) is not None
-#%%
+
 def determine_subgroups(in_file,organism):
     """Master function to determine subgroups to make profiles for.
     
     Utilises get_sentences and get_numerics functions to create a dictionary 
     of the form below:
-    {Mus Musculus Heavy Chain 1:IGHV1, Mus musculus Heavy Chain 2:IGHV2}
+    {Mus Musculus Heavy Chain 1:IGHV1, Mus musculus Heavy Chain 2:IGHV2}.
     Heavy, Lambda, Kappa all present in this dictionary.
     """
     loci = ['Heavy','Kappa','Lambda']
     subgroup_dict = {}
+    #Get locus dictionary and append to overall dictionary
     for locus in loci:
         locus_dict = get_sentences(locus,in_file,organism)
         subgroup_dict.update(locus_dict)     
     return subgroup_dict 
 
-#%%     
 def get_sentences(locus, in_file, organism):
     """Converts subgroup numeric representation to a sentence and creates 
     dictionary based on this.
+
+    locus = Chain type to run (str)
+    in_file = blout_queries file 
+    organism = query organism (str)
     
     E.g. IGHV1 --> Mus musculus Heavy Chain 1.  
     
     Dictionary of form:
-        {Mus Musculus Heavy Chain 1:IGHV1, Mus musculus Heavy Chain 2:IGHV2}
+        {Mus Musculus Heavy Chain 1:IGHV1, Mus musculus Heavy Chain 2:IGHV2}.
     Single chain type only.
     """
     numeric_list = get_numerics(locus,organism,in_file)
     sentences = []    
-    for subgroup_numeric in numeric_list:           #e.g. [IGHV1, IGHV2, IGHV3]
+    for subgroup_numeric in numeric_list:           #e.g.[IGHV1, IGHV2, IGHV3]
         subgroup_numeric = str(subgroup_numeric)
         subgroup_numeric = subgroup_numeric[4:]     #gets subgroup number                           
         sentence = organism + ' ' + locus + ' Chain ' + subgroup_numeric 
@@ -44,9 +48,9 @@ def get_sentences(locus, in_file, organism):
         
     locus_dict = dict(zip(sentences,numeric_list))  #combine lists
     
+    #makes dictionary available for other functions
     return locus_dict
-#%%
-#21/02 added an if statement to deal with o_cuniculus    
+  
 def get_numerics(locus,organism, in_file):
     """Determines the number of subgroups in each chain
     
