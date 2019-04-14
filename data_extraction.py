@@ -108,7 +108,6 @@ def original_make_fasta(input_file,output_file_name):
         elif row[0] != '>':
             sys.stdout.write(row[0])
                 
-
 def make_fasta(input_file,version,output_file_name):
     """Converts extracted abYsis data into FASTA format. Two versions 
     
@@ -179,127 +178,13 @@ def make_fasta(input_file,version,output_file_name):
                 continue
             elif keep_marker:                      # If correct
                 sys.stdout.write(row[0])                    
-               
-def make_fasta_exc_all(input_file,output_file_name):
-    """Converts abysis data to FASTA format. Excludes non-zeroed sequences.
-    
-    input_file = extracted abysis data from xml_parse function (.csv)
-    out_file = named output file (.fasta)
-    
-    h_int = chothia numbering of a residue
-    n_int = position of a residue 
-    
-    Iterates through abysis csv file to find beginning of sequence ('>'). Once 
-    found iterates through residues. If residues are zeroed i.e. Chothia 
-    numbering starts on 1, sequence is kept. All other sequences removed.
-    
-    Evaluates whether a sequence is zeroed by comparing h_int to n_int.    
-    """    
-    #if have H6A then this will be highly indicative of a particular subgroup 
-    #need to keep insertions
-    
-    import csv
-    import re
-    import sys
-    csv_f = csv.reader(open(input_file,newline=''))
-    sys.stdout=open(output_file_name,'a')
-    
-    for row in csv_f:     
-        if row[0] == '>':               #finds start of a sequence
-            count = 0 
-            sys.stdout.write('\n' + row[0] + row[1] + '|' + row[2] + '\n') 
-            
-            #nested for loop determines if sequence should be kept
-            for row in csv_f:           #checks within sequence          
-               count +=1
-               if row[0] == '*':        #if end of seq, exit loop
-                   break
-               if count > 21:           #checks first 21 residues only
-                   break
-               h_number = row[2]        #gets numbering 
-               h_int = int(re.findall("\d+",h_number)[0]) #extract number
-               n_int = int(row[1])      #gets position number
-               
-               if h_int == n_int:
-                   sys.stdout.write(row[0])     #print current residue
-                   keep_marker = True           #sequence is marked as correct
-                   break                        #enter normal loop
-               elif h_int != n_int:             #evaluate
-                   keep_marker = False          #sequence marked as incorrect
-                   break
-        
-        #if sequence is marked as correct then write residues
-        elif row[0] == '*':                 
-            continue
-        else:
-            if not keep_marker:                    #if incorrect
-                continue
-            elif keep_marker:                      #if correct
-                sys.stdout.write(row[0])
-#%%
-def trunc_6(input_file,output_file_name):
-    """Converts abysis data to FASTA format. Excludes non-zeroed up to 6
-    
-    input_file = extracted abysis data frxml_parse function (.csv)
-    out_file = named output file (.fasta)
-    
-    h_int = chothia numbering of a residue
-    n_int = position of a residue 
-    
-    Iterates through abysis csv file to find beginning of sequence ('>'). Once 
-    found it then iterates through residues. Excludes sequences for which 
-    Chothia numbering starts past 6.
-    
-    Evaluates whether a sequence should be kept by comparing h_int to n_int.
-    """    
-    #suggests if its not too difficult that we combine the functions that has a flag as one of the inputs to control the behaviour
-    #anything that can be combined should be combined#dont go overboard
-    
-    import csv
-    import sys
-    csv_f = csv.reader(open(input_file,newline=''))
-    sys.stdout=open(output_file_name,'a')
-    
-    for row in csv_f:
-        if row[0] == '>':
-            count = 0 
-            sys.stdout.write('\n' + row[0] + row[1] + '|' + row[2] + '\n')
-            
-            for row in csv_f:
-               count +=1
-               if row[0] == '*': 
-                   break
-               if count > 21:
-                   break
-               h_number = row[2] 
-               h_int = int(h_number[1:])        #get the numbering
-               n_int = int(row[1])              #get position
-               if h_int == n_int:               #evaluate
-                   sys.stdout.write(row[0])     #print current residue
-                   keep_marker= True
-                   break                        #enter normal loop
-               elif h_int != n_int:
-                   difference = h_int - n_int   #difference between them
-                   if difference > 6:           #if diff >6 then bin
-                       keep_marker = False
-                       break
-                   else:
-                       keep_marker = True
-                       sys.stdout.write('X' * difference) 
-                       sys.stdout.write(row[0]) #write current row
-                       break
-        
-        elif row[0] == '*':
-            continue
-        else:
-            if keep_marker:
-                sys.stdout.write(row[0])
-            elif not keep_marker:
-                continue                
-#%%
-#updated so uses python. doesnt matter if linux or windows os                 
-"""Removes spaces in fasta file"""             
+                                 
 def remove_spaces(in_file):
+    """Removes spaces in a fasta file
+    
+    Used to handle inconsistent labelling of IDs etc. 
+    
+    """   
     with open(in_file,'r') as file:
         lines = file.readlines()
         
@@ -308,7 +193,7 @@ def remove_spaces(in_file):
     
     with open(in_file,'w') as file:
         file.writelines(lines)
-#%%         
+       
 def remove_short_sequences(infile,outfile):
     """Removes FASTA sequences of less than 21 residues"""    
     from Bio import SeqIO
@@ -318,8 +203,13 @@ def remove_short_sequences(infile,outfile):
         if len(record.seq) > 20: 
             print('>' + record.id)
             print(record.seq)          
-#%%
-def clean_queries(in_file,os,out_file):    
+
+def seqkit_clean(in_file,os,out_file):  
+    """Cleans a FASTA file using SeqKit
+
+    FASTA sequences of duplicate ID or Sequence are deleted
+    """
+
     if os == 'Windows':
         import subprocess 
         cmd = ('type ' + in_file +' | seqkit rmdup -n | seqkit rmdup -s -o ' + out_file)
@@ -327,11 +217,9 @@ def clean_queries(in_file,os,out_file):
     elif os == 'Linux':
         cmd = ('cat ' + in_file +' | seqkit rmdup -n | seqkit rmdup -s -o ' + out_file)
         subprocess.Popen(cmd)
-        
-    
-#%%
+          
 def convert_seqkit(infile,outfile):
-    """Converts ouput of seqkit into human readable fasta format"""
+    """Converts ouput of seqkit into more readable  format"""
     from Bio import SeqIO
     import sys 
     sys.stdout = open(outfile,'a')
