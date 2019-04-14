@@ -76,12 +76,20 @@ def make_final_results(in_file,blout_file,organism,out_file):
     
     in_file = file containing fasta IDs matched to their hsubgroup results 
     blout_file = blout queries file
-    organism = name of query organism 
+    organism = name of query organism (str)
     out_file = named out file containing full results (.csv)
     
     Uses a zip function to join the in_file and blout_file together.
     Organism is also attached to the end of the row for species comparison
     later on. 
+
+    Output file format:
+
+    QueryID, Assign 1, Score 1, Assign 2, Score 2, QueryID, BLAST record,
+    Residues, Organism.
+
+    Redundancy in this file of both QueryID being present twice and residues 
+    being included.
     """ 
     import csv 
     import sys 
@@ -103,16 +111,18 @@ def make_final_results(in_file,blout_file,organism,out_file):
                                  
 #%%
 def check_assignment(in_file,blout_queries_file,organism,out_file):
-    """Determines the MCC of each subgroup and outputs to file
+    """Determines the MCC of each subgroup and outputs to file.
     
-    in_file = full results file 
-    blout_queries_file = blout_queries_file
-    organism = current query organism
+    in_file = full results file (.csv)
+    blout_queries_file = blout_queries_file (.csv)
+            Used to generate subgroup dictionary
+    organism = current query organism (str)
     out_file = named file to contain results of MCC calculations (.txt)
     
     Function works by comparing hsubgroup's allocation (e.g. Mouse Heavy 1) to
     BLAST's allocation (e.g. IGHV1). Uses a dictionary to link subgroups e.g.
-    {Mouse Heavy Chain 1: IGHV1, Mouse Heavy Chain 2: IGHV2}
+    {Mouse Heavy Chain 1: IGHV1, Mouse Heavy Chain 2: IGHV2}. Dictionary
+    derived from derive_profiles.py functions. 
     
     For each row in the full results file, determines whether it is TP, TN, FP
     or FN. Then uses MCC formula to determine the MCC. Repeats for all 
@@ -127,30 +137,24 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
         print('Subgroup,','MCC,','TPR,','TNR,','PPV,' , 'TN,','FN,','FP,',
         'TN')
             
-        
-        #initialise variables
         av_MCC_num = 0
         av_MCC_count = 0
         MCC_list = []
     
         #determine subgroup names to evaluate
         my_dict = determine_subgroups(blout_queries_file,organism)
-        #will have to repeat this for multiple organisms
-        #you probably dont need a blout_queries_file? full_results has same
-        #info that blout_queries_does
-        
-        #iterate through subgroups using dictionary      
+
+        #Iterate through subgroups using dictionary      
         for x in my_dict: 
-            csv_in.seek(0)
-            #initialise confusion matrix variables
-            TP = 0 #
+            csv_in.seek(0) #remove
+            TP = 0 
             FP = 0 
             FN = 0 
             TN = 0 
             misc = 0
             training = 0 
 
-            alt_x = my_dict[x] + 'S'    #IGHV1S. Deals with intrasubgroup subgs
+            alt_x = my_dict[x] + 'S'   #IGHV1S. Deals with intrasubgroup subgs
             
             for row in reader:            
                 prediction = str(row[1])  
@@ -159,11 +163,12 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
                 
                 if organism != 'Oryctolagus cuniculus':
                                 
-                    #assign entry to confusion matrix variable
+                    #Assign entry to confusion matrix variable
                     if phrases(x, prediction) == True and \
                     phrases(my_dict[x],actual) == True:
                         TP +=1 
-                    
+        
+                    #IGHV1S1 is counted as an IGHV1 TP
                     if phrases(x, prediction) == True and \
                     alt_x in actual:
                         TP +=1 
@@ -178,9 +183,8 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
                         
                     elif phrases(x,prediction) == False and \
                     phrases(my_dict[x],actual) == False:
-                        TN +=1
-                    
-                    #should always be 0
+                        TN +=1        
+                    #Should always be 0
                     else:
                         misc +=1
                         
@@ -203,22 +207,20 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
                         TN +=1
                     
                     else:
-                        misc +=1
-            
-            #assess performance
-            #get rid of int label
+                        misc +=1   
+            #Assess performance
+            #Try/except used to catch division by 0 (can sometimes occur)
             try:
                 MCC = float((TP * TN) - (FP * FN))/ float(((TP+FP)*(TP+FN)*(TN+FP)*
                            (TN+FN)) ** 0.5)
-                #dont int sqrt for definite. losing accuracy
-                MCC = round(MCC,3)
+                MCC = round(MCC,5)
                 
-                #other performance measures                         
-                TPR = round((TP/(TP+FN)),3)
-                TNR = round((TN/(TN+FP)),3)
-                PPV = round((TP/(TP+FP)),3)
+                #Other performance measures                         
+                TPR = round((TP/(TP+FN)),5)
+                TNR = round((TN/(TN+FP)),5)
+                PPV = round((TP/(TP+FP)),5)
                                 
-                #variables for average calculation 
+                #Average calc variables
                 av_MCC_num += MCC
                 av_MCC_count +=1
                 MCC_list.append(MCC)
@@ -227,9 +229,10 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
             except Exception as e:
                 MCC = 'N/A'
                 print(x, MCC, 'Error:', e)
-                
-                
+                           
         average_MCC = av_MCC_num/av_MCC_count 
         average_MCC = str(average_MCC)
         print('Simple MCC Average:',',',average_MCC) 
+
+        #Makes MCC values available for other functions
         return MCC_list
