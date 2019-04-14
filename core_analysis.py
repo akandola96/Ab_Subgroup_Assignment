@@ -1,3 +1,13 @@
+def phrases(phrase,text):
+    """Replaces using 'in', which is non-specific.
+    
+    Returns true if EXACT match between strings is found, false oteherwise. 
+    Case insensitive.
+    Can differentiate between IGHV1 and IGHV10, which 'in' cannot.
+    """    
+    import re
+    return re.search(r"\b{}\b".format(phrase), text, re.IGNORECASE) is not None
+
 def fasta2pir(infile,outfile):
     """Converts a FASTA formatted file to PIR format. Required format of 
     hsubgroup.   
