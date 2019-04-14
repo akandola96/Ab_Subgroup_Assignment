@@ -19,8 +19,6 @@ def xml_parser(input_file,query_organism,output_file_name):
     L 2 H2
     V 3 H3
     * * *    
-    #this is a test 
-    
     """    
     import xml.etree.ElementTree as ET
     import sys
