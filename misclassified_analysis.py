@@ -93,41 +93,7 @@ def extract_first_21_residues(input_file, output_file):
             seq = str(record.seq)
             seq = seq[:21]
             print(seq)
-               
-#%%
-def extract_random_sequences(subgroup,number):
-    #extracts random sequences by BLAST assignment. No preference to TP, FP etc.
-    import sys
-    import csv        
-    import random
-    from Bio import SeqIO
-    sys.stdout = open('IGKV1__single_seq_evolution_alignment.txt','a+')
-    with open('Mus_musculus_full_results.csv') as csv_in:
-            reader = csv.reader(csv_in)
-            ids = []
-            test_ids = []
-            
-            count = 0 
-            for row in reader:
-                blast_assignment = str(row[6])
-                seq_id = row[0]
-                if subgroup in blast_assignment:
-                    ids.append(seq_id)
-                    
-                    
-            for x in range(1,number):
-                test_seq_id = random.choice(ids)
-                test_ids.append(test_seq_id)
-            
-                
-            for test_id in test_ids:
-                test_id = test_id[:-1] #remove extra space
-                for record in SeqIO.parse('mus_musculus_queries_e.fasta','fasta'):
-                    if test_id == record.id:
-                        record.id = record.id[-10:]
-                        record_seq = str(record.seq)
-                        sys.stdout.write('>'+record.id+'|'+subgroup+'\n'+record_seq+'\n')
-#%%            
+                     
 def extract_random_TPs(in_file,subgroup,sentence, number,fasta_file,out_file,pull_sequences):
 #e.g. full_results, IGHV1-, Mus musculus Kappa Chain 1, 10
 #picks 10 random true positive sequences for a given subgroup     
