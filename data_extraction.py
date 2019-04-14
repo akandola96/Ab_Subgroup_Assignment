@@ -2,10 +2,8 @@ def xml_parser(input_file,query_organism,output_file_name):
     """Extracts raw sequence data from abysis
 
     input_file = abysis data file (.xml)
-    query_organism = organism name as found in abysis. Can also do genus
+    query_organism = organism name as found in abysis. Can also do genus (str)
     output_file_name = named output file (.csv)
-    
-    explain types e.g. int or string maye inclde example if vague
     
     Uses element tree to derive the XML tree and iterates through data by
     antibody chain. Extracts all non-pseudogene sequences beloning to query
@@ -39,10 +37,11 @@ def xml_parser(input_file,query_organism,output_file_name):
                         name = chain.find('name').text
                         organism = chain.find('organism').text
                         if organism in query_organism:  #write ID and acc                     
-                            name = name.replace(',','')
+                            name = name.replace(',','') 
                             sys.stdout.write('>' + ',' + name + ',' 
                                              + accession + '\n')
                             
+                            #residue for loop
                             for residue in chain.iter('residue'):
                                 aa = residue.attrib['aa']
                                 pos = residue.attrib['pos']
@@ -70,6 +69,7 @@ def xml_parser(input_file,query_organism,output_file_name):
                     sys.stdout.write('>' + ',' + name + ',' 
                                      + accession + '\n')
                     
+                    #residue for loop
                     for residue in chain.iter('residue'):
                         aa = residue.attrib['aa']
                         pos = residue.attrib['pos']
