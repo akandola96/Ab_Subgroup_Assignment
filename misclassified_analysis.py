@@ -94,10 +94,20 @@ def extract_first_21_residues(input_file, output_file):
             seq = seq[:21]
             print(seq)
                      
-def extract_random_TPs(in_file,subgroup,sentence, number,fasta_file,out_file,pull_sequences):
-#e.g. full_results, IGHV1-, Mus musculus Kappa Chain 1, 10
-#picks 10 random true positive sequences for a given subgroup     
-    
+def extract_random_TPs(in_file,subgroup,sentence, number,fasta_file,
+                        out_file,pull_sequences):
+
+"""Extracts random TP sequences for a given subgroup. Used for phylo trees.
+
+    in_file = full results file (.csv)
+    subgroup e.g. IGKV1 (str)
+    sentence e.g. Mus musculus Kappa Chain 1 (str)
+    number = number of TP sequences desired (int)
+    fasta_file = fasta queries file (.fasta)
+    out_file = named output file (.txt)
+    pull_sequence = 'Y' or 'N' (str)
+        If Y, extracts sequence to file.
+"""   
     import csv
     import sys
     import random
@@ -115,29 +125,26 @@ def extract_random_TPs(in_file,subgroup,sentence, number,fasta_file,out_file,pul
             actual_subg = str(row[6]) #will need to change to row 7 in later runs
             
             
-            # If TP then extract 
+            # If TP then extract ID to list 
             if phrases(subgroup,actual_subg) == True and \
             phrases(sentence,assigned_subg) == True:
                 TP_ids_list.append(seq_id)
-                
-        TP_ids_list_sample = random.sample(TP_ids_list,number) #picks number random choices
+        #Pick random SeqIDs from list         
+        TP_ids_list_sample = random.sample(TP_ids_list,number)
          
-        
+        #Extract sequences from FASTA queries file
         if pull_sequences == 'Y':
             for seq_id in TP_ids_list_sample:
                 seq_id = seq_id[:-1]
-                
                 for record in SeqIO.parse(fasta_file,'fasta'):
                     if seq_id == record.id:
                         record.id = record.id[-10:]
                         record_seq = str(record.seq)
-                        
                         header = '>' + subgroup + '_' + record.id
                         sys.stdout.write(header + '\n' + record_seq + '\n')
-                        
+
+        #Dont extract sequences                
         elif pull_sequences == 'N':
             print(TP_ids_list_sample)
             
-        sys.stdout.close
-        
-    
+        sys.stdout.close 
