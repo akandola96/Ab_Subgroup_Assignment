@@ -18,9 +18,9 @@ The **xml_parser** function is responsible for extracting sequence data from raw
 |L|2|H2|
 |>| ID| Accession| 
 H|3|H1|
-V|4|H2
-L|5|H3
-* *  *
+V|4|H2|
+L|5|H3|
+|*|*|*|
 
 The **count_abysis** function takes the output of the **xml_parser** function as it's *in_file* and determines how many records were 
 extracted by counting the number of '>' characters it finds. 
