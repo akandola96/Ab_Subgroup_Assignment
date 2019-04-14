@@ -228,7 +228,6 @@ def convert_seqkit(infile,outfile):
         print('>' + record.id)
         print(str(record.seq))
         
-
 def count_num_queries(in_file):
     """Counts number of sequences in a fasta file"""
     from Bio import SeqIO
