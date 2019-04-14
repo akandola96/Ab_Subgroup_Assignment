@@ -53,6 +53,13 @@ The **extract_ref_data** function is used to extract reference query data from a
 
 The **count_xml_blast_records** function simply counts the number of BLAST records produced. This number should agree with the number of sequences counted by the **count_num_queries** function, and is used solely to check this. 
 
-**blast_output_xml2csv**
+**blast_output_xml2csv** converts the output of **tBLASTn_full** from XML to CSV. Extracts only the top alignment (by E-value) for each BLAST record. The query ID and alignment description are outputted to a new CSV file. 
+
+**join_queries2blout**: Attaches query sequences (residues) to the output of the file produced by **blast_output_xml2csv**. Resultant file is of the format shown below. 
+
+|Query ID|Alignment Description|Query Sequence Residues|
+|-----|-----|-----|
+|Anti-A\00001|refseq5115 \ mus musculus \ IGHV1-21|QVQLVQ....|
+|Anti-B\00501|refseq3113\mus musculus\IGKV1-39|EVLKST...|
 
 
