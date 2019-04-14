@@ -111,7 +111,7 @@ def original_make_fasta(input_file,output_file_name):
 def make_fasta(input_file,version,output_file_name):
     """Converts extracted abYsis data into FASTA format. Two versions.
     input_file = extracted abysis data file (.csv)
-    version = 'EA' or 'T6' (string)
+    version = 'EA' or 'T6' (str)
         EA = Excludes all sequences for which Chothia/Kabat numbering begins
         past 1.
         T6 = Allows sequences with up to 6 missing N-terminal residues. X's 
@@ -129,7 +129,6 @@ def make_fasta(input_file,version,output_file_name):
     keep_marker boolean determines whether a sequence should be kept or not
     """
     import csv
-    import re
     import sys
     csv_f = csv.reader(open(input_file,newline=''))
     sys.stdout=open(output_file_name,'a')
@@ -225,7 +224,7 @@ def convert_seqkit(infile,outfile):
     for record in file:
         print('>' + record.id)
         print(str(record.seq))
-        
+               
 def count_num_queries(in_file):
     """Counts number of sequences in a fasta file"""
     from Bio import SeqIO
