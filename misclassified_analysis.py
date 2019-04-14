@@ -146,5 +146,4 @@ def extract_random_TPs(in_file,subgroup,sentence, number,fasta_file,
         #Dont extract sequences                
         elif pull_sequences == 'N':
             print(TP_ids_list_sample)
-            
         sys.stdout.close 
