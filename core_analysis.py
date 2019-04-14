@@ -1,52 +1,63 @@
 
 def fasta2pir(infile,outfile):
-    """Converts a FASTA formatted file to PIR format
-    
-    PIR formatted sequences are inputted to the hsubgroup program   
+    """Converts a FASTA formatted file to PIR format. Required format of 
+    hsubgroup.   
     """
     from Bio import SeqIO
     import sys 
     sys.stdout = open(outfile,'a')
     file = SeqIO.parse(infile,'fasta')
     for record in file:
-        print('>' + 'P1' + ';' + record.id) #change to one string
+        print('>P1;'+ record.id) 
         print(record.id)
-        print(record.seq + '*')        #PIR strictly ID is not supposed to be more than 6 or 8 chars
-        #next line PIr is meant to be a descriptor 
-#%%
+        print(record.seq + '*')        
+
 def run_hsubgroup(query_file,matrix_file,matrix_type,score_type,out_file):
-    """Takes PIR formatted query sequences and profiles and runs hsubgroup"""
+    """Takes PIR formatted query sequences and profiles and runs hsubgroup
+
+    query_file = PIR formatted queries (.pir)
+    matrix_file = file containing subgroup profile (.txt)
+    matrix_type = '2line' or 'full' (str)
+    score_type = 'normal' or 'log' (str)
+    out_file = named out file containing hsubgroup scores (.csv)
+    
+    Creates a command string and runs using subproces.
+    """
+
+    #having some trouble running. Need use cygwin to do so on windows
     import subprocess
     
+    #Profile version
     if matrix_type == 'full':
         matrix_type == '-f'
     elif matrix_type =='2line':
         matrix_type == ''
-        
-        
+    #Freq_type version
     if score_type == 'product':
         score_type == ' -p'
     elif score_type == 'sum':
         score_type = ''
-    
-    
     cmd = ('hsubgroup -d ' + matrix_file + ' -v ' + matrix_type + score_type 
             +' ' + query_file + ' >> ' + out_file)
-    
-    
-    hsubgroup_run = subprocess.Popen(cmd,shell=True)
-    
+       
+    hsubgroup_run = subprocess.Popen(cmd,shell=True) 
     hsubgroup_run.wait()
-    
-    
-#%%
-#attach queries to their corresponding score         
-def fasta2csv(in_file,score_file,out_file):
+ 
+        
+def attach_scores_to_queries(in_file,score_file,out_file):
     """Matches fasta IDs to their score from hsubgroup
     
     infile = queries.fasta
     score_file = csv file containing scores from hsubgroup
     out_file = named filed containing seq IDs matched to scores (.csv)
+
+    hsubgroup scores sequences in same order they are entered in. Thus, can 
+    use a zip function to match query sequences to their scores. 
+
+    Output file format (known as seqs_scores file)
+
+    Query_ID, Mus musculus Heavy Chain x, 85.2222, Mus musculus Heavy Chain y,
+    67.3333.
     """
     from Bio import SeqIO
     import csv 
@@ -59,9 +70,8 @@ def fasta2csv(in_file,score_file,out_file):
             x = record.id
             joined = str(x+ ' ' + ',' + ' ' + r)
             sys.stdout.write(joined)
-   
-#%%        
-def attach_blast_record(in_file,blout_file,organism,out_file):
+        
+def make_final_results(in_file,blout_file,organism,out_file):
     """Creates final results file for downstream analysis.
     
     in_file = file containing fasta IDs matched to their hsubgroup results 
