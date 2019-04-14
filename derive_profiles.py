@@ -102,7 +102,7 @@ def get_numerics(locus,organism, in_file):
                 
         return numeric_list
 #%%               
-def get_matrices(locus, infile, out_file,query_organism,freq_type,matrix_type):
+def get_profiles(locus, infile, out_file,query_organism,freq_type,matrix_type):
     """Master function to derive the profiles of a loci's subgroups.
     
     locus = 'Heavy', 'Lambda' or 'Kappa'. Has to be run for each one (str).
@@ -135,16 +135,16 @@ def get_matrices(locus, infile, out_file,query_organism,freq_type,matrix_type):
                              + 'Chain' + ' ' + subg_num + '"' + ',')
             #Get profiles
             if matrix_type == '2line':
-                derive_matrices_2line(infile,subgroup,freq_type,out_file)
+                derive_profiles_2line(infile,subgroup,freq_type,out_file)
             elif matrix_type == 'full':
-                derive_matrices_full(infile,subgroup,freq_type,out_file)
+                derive_profiles_full(infile,subgroup,freq_type,out_file)
             #Formatting
             sys.stdout.write('//' + '\n')
         except Exception as e:
             print('ERROR OCCURRED')
             print(e)            
 
-def derive_matrices_2line(in_file, query_subgroup,freq_type,out_file):      
+def derive_profiles_2line(in_file, query_subgroup,freq_type,out_file):      
     """Generates a two line profile for a subgroup.
     
     in_file = file containing query seqeunces matched to their BLAST record
@@ -270,7 +270,7 @@ def derive_matrices_2line(in_file, query_subgroup,freq_type,out_file):
         sys.stdout.write("".join(tops2) + ',' +'\n') 
         sys.stdout.write(",".join(str(x) for x in formatted_freqs2) +'\n') 
 
-def derive_matrices_full(in_file, query_subgroup,freq_type,out_file): 
+def derive_profiles_full(in_file, query_subgroup,freq_type,out_file): 
     """Generates a full profile for a subgroup.
     
     in_file = file containing query seqeunces matched to their BLAST record
