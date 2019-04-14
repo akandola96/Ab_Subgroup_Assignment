@@ -8,6 +8,8 @@ Core analysis code consists of data_extraction.py, blast.py, derive_profiles.py,
 
 ## Data Extraction 
 
+#### Aims to extract raw data from abysis, culminating in a FASTA formatted file containing sequences to be analysed
+
 The **xml_parser** function is responsible for extracting sequence data from raw abYsis files. It checks each record within the 
 *input_file* provided and extracts all records that belong to the *query_organism*. The *output_file* is a CSV file with entries stored in a vertical format, shown below. The first column contains the residue itself; the second column, the number of this residue within the entire sequence; the third column the Chothia (or Kabat when Chothia is unavailable) numbering of this residue. 
 
@@ -43,7 +45,9 @@ The **convert_seqkit** function takes the output of **seqkit_clean** as an input
 
 The **count_num_queries** function simply counts the number of FASTA sequences present in an *in_file* and returns output to the console
 
-## BLAST 
+## BLAST
+
+#### Runs BLAST on all query sequences. Culminates in a csv file (referred to as blout queries file) that contains Query ID, Alignment Description, and 21 N-terminal query sequence residues for each query sequence.
 
 The **extract_ref_data** function is used to extract reference query data from a FASTA formatted file. In the case of this project, this data derives from the IMGT. *Organism* represents the name of the query organism, this must be as found in IMGT data i.e. 'Mus musculus' rather than 'Mouse'. *Region* refers to V, D, J or C genes; in this project, V-region genes were exclusively used. The function extracts reference sequences that belong to the organism in question, provided they are functional genes. 
 
@@ -55,11 +59,15 @@ The **count_xml_blast_records** function simply counts the number of BLAST recor
 
 **blast_output_xml2csv** converts the output of **tBLASTn_full** from XML to CSV. Extracts only the top alignment (by E-value) for each BLAST record. The query ID and alignment description are outputted to a new CSV file. 
 
-**join_queries2blout**: Attaches query sequences (residues) to the output of the file produced by **blast_output_xml2csv**. Resultant file is of the format shown below. 
+**join_queries2blout**: Attaches query sequences (residues) to the output of the file produced by **blast_output_xml2csv**. Resultant file is of the format shown below. Query sequence residues up to the 21st residue are included. This file is referred to as the **blout_queries** for the remainder of this ReadMe
 
 |Query ID|Alignment Description|Query Sequence Residues|
 |-----|-----|-----|
 |Anti-A\00001|refseq5115\mus musculus\IGHV1-21*04|QVQLVQ...|
 |Anti-B\00501|refseq3113\mus musculus\IGKV1-39*02|EVLKST...|
+
+## Derive Profiles 
+
+
 
 
