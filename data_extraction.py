@@ -1,3 +1,4 @@
+#%%
 def xml_parser(input_file,query_organism,output_file_name):
     """Extracts raw sequence data from abysis
 
@@ -18,6 +19,8 @@ def xml_parser(input_file,query_organism,output_file_name):
     L 2 H2
     V 3 H3
     * * *    
+    #this is a test 
+    
     """    
     import xml.etree.ElementTree as ET
     import sys
@@ -84,6 +87,7 @@ def xml_parser(input_file,query_organism,output_file_name):
                             continue                            
                     sys.stdout.write('*' +',' + '*' +',' + '*' + '\n')
                     
+#%%
 def count_abysis(in_file):
     """Counts number of records extracted from abYsis into csv file"""
     import csv   
@@ -94,7 +98,7 @@ def count_abysis(in_file):
             if row[0] == '>':
                 count +=1
         print(count)
-
+#%%
 def original_make_fasta(input_file,output_file_name):
     """Extracts all sequences from abysis data"""
     import csv
@@ -107,10 +111,9 @@ def original_make_fasta(input_file,output_file_name):
             continue
         elif row[0] != '>':
             sys.stdout.write(row[0])
-                
+#%%            
 def make_fasta(input_file,version,output_file_name):
-    """Converts extracted abYsis data into FASTA format. Two versions 
-    
+    """Converts extracted abYsis data into FASTA format. Two versions.
     input_file = extracted abysis data file (.csv)
     version = 'EA' or 'T6' (string)
         EA = Excludes all sequences for which Chothia/Kabat numbering begins
@@ -128,7 +131,6 @@ def make_fasta(input_file,version,output_file_name):
     insertion.
 
     keep_marker boolean determines whether a sequence should be kept or not
-
     """
     import csv
     import re
@@ -178,7 +180,7 @@ def make_fasta(input_file,version,output_file_name):
                 continue
             elif keep_marker:                      # If correct
                 sys.stdout.write(row[0])                    
-                                 
+#%%                                
 def remove_spaces(in_file):
     """Removes spaces in a fasta file
     
@@ -193,7 +195,7 @@ def remove_spaces(in_file):
     
     with open(in_file,'w') as file:
         file.writelines(lines)
-       
+#%%    
 def remove_short_sequences(infile,outfile):
     """Removes FASTA sequences of less than 21 residues"""    
     from Bio import SeqIO
@@ -203,7 +205,7 @@ def remove_short_sequences(infile,outfile):
         if len(record.seq) > 20: 
             print('>' + record.id)
             print(record.seq)          
-
+#%%
 def seqkit_clean(in_file,os,out_file):  
     """Cleans a FASTA file using SeqKit
 
@@ -217,9 +219,9 @@ def seqkit_clean(in_file,os,out_file):
     elif os == 'Linux':
         cmd = ('cat ' + in_file +' | seqkit rmdup -n | seqkit rmdup -s -o ' + out_file)
         subprocess.Popen(cmd)
-          
+#%%        
 def convert_seqkit(infile,outfile):
-    """Converts ouput of seqkit into more readable  format"""
+    """Converts ouput of seqkit into more readable format"""
     from Bio import SeqIO
     import sys 
     sys.stdout = open(outfile,'a')
