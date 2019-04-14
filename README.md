@@ -8,7 +8,7 @@ Core analysis code consists of data_extraction.py, blast.py, derive_profiles.py,
 
 ## Data Extraction 
 
-#### Aims to extract raw data from abysis, culminating in a FASTA formatted file containing sequences to be analysed
+### Aims to extract raw data from abysis, culminating in a FASTA formatted file containing sequences to be analysed
 
 The **xml_parser** function is responsible for extracting sequence data from raw abYsis files. It checks each record within the 
 *input_file* provided and extracts all records that belong to the *query_organism*. The *output_file* is a CSV file with entries stored in a vertical format, shown below. The first column contains the residue itself; the second column, the number of this residue within the entire sequence; the third column the Chothia (or Kabat when Chothia is unavailable) numbering of this residue. 
@@ -47,7 +47,7 @@ The **count_num_queries** function simply counts the number of FASTA sequences p
 
 ## BLAST
 
-#### Runs BLAST on all query sequences. Culminates in a csv file (referred to as blout queries file) that contains Query ID, Alignment Description, and 21 N-terminal query sequence residues for each query sequence.
+### Runs BLAST on all query sequences. Culminates in a csv file (referred to as blout queries file) that contains Query ID, Alignment Description, and 21 N-terminal query sequence residues for each query sequence.
 
 The **extract_ref_data** function is used to extract reference query data from a FASTA formatted file. In the case of this project, this data derives from the IMGT. *Organism* represents the name of the query organism, this must be as found in IMGT data i.e. 'Mus musculus' rather than 'Mouse'. *Region* refers to V, D, J or C genes; in this project, V-region genes were exclusively used. The function extracts reference sequences that belong to the organism in question, provided they are functional genes. 
 
@@ -68,6 +68,19 @@ The **count_xml_blast_records** function simply counts the number of BLAST recor
 
 ## Derive Profiles 
 
+### Derives profiles for all subgroups. Culminates in a .txt file containing all subgroup profiles. Functions also used in later analysis.
+
+**phrases** is a simple RegEx function that was designed to provide a way of differentiating IGHV1 from IGHV11 (as found in BLAST alignment description). Python's 'in' cannot distinguish between these. Function used throuhgout project from hereon in. 
+
+**determine_subgroups**. Master function for the determination of subgroups. Uses other functions to create a dictionary in the form shown below containing all subgroups.
+
+#### {Mus musculus Heavy Chain 1:IGHV1, Mus musculus Heavy Chain 2:IGHV2, Mus musculus Kappa Chain 1:IGKV1, Mus musculus Lambda Chain 1:IGLV1}
+
+This dictionary is required to manage the difference in outputs of BLAST (which assigns subgroups as 'IGHV1') and hsubgroup (which assigns subgroups as 'Mus musculus Heavy Chain 1'). 
+
+**get_sentences**. Converts the 'numeric' subgroup codes derived from the **get_numerics** function into sentences e.g. IGHV1 to Mus musculus Heavy Chain 1.
+
+**get_numerics**. Root of all functions used to derive subgroup profiles. BLAST alignment description contains subgroup info in the form of IGHV1, IGHV2 etc. **get_numerics** creates strings e.g. IGHV1, IGHV2, IGHV3, IGHV4 ... IGHV30 and determines whether this string can be found in any of the BLAST alignment descriptions. If it is found, this subgroup is added to a list of confirmed subgroups, from which other functions work. *in_file* is the **blout queries file** shown above. 
 
 
 
