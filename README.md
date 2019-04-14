@@ -16,6 +16,7 @@ The **xml_parser** function is responsible for extracting sequence data from raw
 |>| ID| Accession |
 |H|1|H1|
 |L|2|H2|
+|*|*|*|
 |>| ID| Accession| 
 H|3|H1|
 V|4|H2|
@@ -34,8 +35,24 @@ the *version* variable is set to 'EA' then all sequences that begin Chothia numb
 The **remove_spaces** function takes the output of the **make_fasta** or **original_make_fasta** functions as an input. It removes all 
 spaces from the input file. This is to prevent inconsistencies in either the sequence name or accession code causing issues downstream. It was noticed, for example, that some accession codes had spaces within them e.g. 0 001, which disrupted analysis. 
 
-The **remove_short_sequences** function takes the output of **remove_spaces** and removes FASTA sequences of less than 21 residues.
+The **remove_short_sequences** function takes the output of **remove_spaces** and removes FASTA sequences of less than 21 residues. Outputs to a new file. 
 
-The **seqkit_clean** function takes a FASTA formatted file and removes duplicate sequences by both ID and sequence. The *os* variable is provided to distinguish between Linux and Windows operating systems. The function runs a commmand line process utilisng the SeqKit...
+The **seqkit_clean** function takes a FASTA formatted file and removes duplicate sequences by both ID and sequence. The *os* variable is provided to distinguish between Linux and Windows operating systems. The function runs a commmand line process utilisng the SeqKit library. 
+
+The **convert_seqkit** function takes the output of **seqkit_clean** as an input. After running SeqKit the FASTA file will be formatted in a manner that is difficult to manually look at. This function simply re-formats the file so it can be viewed manually and understood. 
+
+The **count_num_queries** function simply counts the number of FASTA sequences present in an *in_file* and returns output to the console
+
+## BLAST 
+
+The **extract_ref_data** function is used to extract reference query data from a FASTA formatted file. In the case of this project, this data derives from the IMGT. *Organism* represents the name of the query organism, this must be as found in IMGT data i.e. 'Mus musculus' rather than 'Mouse'. *Region* refers to V, D, J or C genes; in this project, V-region genes were exclusively used. The function extracts reference sequences that belong to the organism in question, provided they are functional genes. 
+
+**make_ref_blastdb** utilises the data produced from **extract_ref_date** to construct a BLAST+ database. *-dbtype* is nucleotide and Seq IDs are parsed. Reference database should be named something appropriate e.g. m_musculus_ref_db. Six files will be produced from this step, all of which contribute to the BLAST database. Function works by running a command line process via Python's subprocess module. 
+
+**tBLASTn_full** carries out a commmand line process to run tBLASTn. The *queries* input variable should be the FASTA formatted sequence file derived from the **Data Extraction** steps. The *db* variable derives from the **make_ref_blastdb** function, taking care not to specify any single file from this function but rather the name of the overall db e.g. m_musculus_ref_db rather than m_musculus_ref_db.nin. *-outfmt 5* specifies that the output of this step should be in XML format, this resulting output file is often very large and should not be manually viewed. The alignments in the XML file are ordered by E-value, with the best E-value being the first alignment. the *soft_masking false* argument is passed to turn off low complexity filtering. 
+
+The **count_xml_blast_records** function simply counts the number of BLAST records produced. This number should agree with the number of sequences counted by the **count_num_queries** function, and is used solely to check this. 
+
+**blast_output_xml2csv**
 
 
