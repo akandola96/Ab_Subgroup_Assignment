@@ -110,7 +110,6 @@ def join_queries2blout(blout_file,queries_file,out_file):
     ID, BLAST_record, Residues 
     MOPC|00001,RefSeq5115|IGHV1|Mus musculus,QVQLQVS...
     Anti-A|00002,RefSeq4123|IGKV1|Mus musculus,EVQLST...
-
     """   
     import csv
     import sys
