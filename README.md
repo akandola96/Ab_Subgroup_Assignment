@@ -11,15 +11,15 @@ Core analysis code consists of data_extraction.py, blast.py, derive_profiles.py,
 The **xml_parser** function is responsible for extracting sequence data from raw abYsis files. It checks each record within the 
 *input_file* provided and extracts all records that belong to the *query_organism*. The *output_file* is a CSV file with entries stored in a vertical format, shown below. The first column contains the residue itself; the second column, the number of this residue within the entire sequence; the third column the Chothia (or Kabat when Chothia is unavailable) numbering of this residue. 
 
-> ID Accession 
-H 1  H1
-L 2  H2
-* *  *
-
-> ID Accession 
-H 3  H1
-V 4  H2
-L 5  H3
+|Col1|Col2|Col3|
+|----|----|----|
+|>| ID| Accession |
+|H|1|H1|
+|L|2|H2|
+|>| ID| Accession| 
+H|3|H1|
+V|4|H2
+L|5|H3
 * *  *
 
 The **count_abysis** function takes the output of the **xml_parser** function as it's *in_file* and determines how many records were 
