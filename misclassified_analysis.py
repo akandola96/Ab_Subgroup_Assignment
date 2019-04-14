@@ -1,21 +1,20 @@
-def extract_misclassified_subgroup(in_file, fasta_file, subgroup, sentence,out_file,misclassified_type,pull_assignment):
-    """Extracts misclassified sequences for a given subgroup
-    in_file = full results file 
-    fasta_file = fasta queries file 
-    subgroup e.g. IGKV1
-    sentence e.g. Mus musculus Kappa Chain 1
-    out_file = named output file 
-    misclassified_type = either 'FP' or 'FN'
-    pull_assignment = determine whether ...
+def extract_misclassified_subgroup(in_file, fasta_file, subgroup, sentence,
+                                out_file,misclassified_type,pull_assignment):
+                    
+    """Extracts misclassified sequences for a given subgroup.
+    in_file = full results file (.csv)
+    fasta_file = fasta queries file (.fasta)
+    subgroup e.g. IGKV1 (str)
+    sentence e.g. Mus musculus Kappa Chain 1 (str)
+    out_file = named output file (.txt)
+    misclassified_type = 'FP' or 'FN' (str)
+    pull_assignment = True or False (bool)
+        If true returns actual assignment to console.
     
     Function works by determinig if a particular sequence is misclassified for 
-    the subgroup and if so adds its seq.id to a list. Then goes through this
-    list and extracts relevant query sequences from fasta file.
-    
-    Replaces traditional 
-    
+    the subgroup and if so adds its seq.id to a list. Then goes FASTA queries 
+    file and extracts the sequences. For use in phylo tree creation.    
     """
-    #e.g. full_results, queries_e.fasta
     import csv
     import sys
     from Bio import SeqIO
@@ -23,9 +22,9 @@ def extract_misclassified_subgroup(in_file, fasta_file, subgroup, sentence,out_f
     with open(in_file) as csv_in:
         reader = csv.reader(csv_in)
         
-        seq_ids_FP = []    #False Positives
-        seq_ids_FN=[]      #False negatives
-        hsubgroup_assignment_FP = []
+        seq_ids_FP = []                     #False Positives IDs
+        seq_ids_FN=[]                       #False negatives IDs
+        hsubgroup_assignment_FP = []        
         hsubgroup_assignment_FN = []
         
         for row in reader:
@@ -33,29 +32,31 @@ def extract_misclassified_subgroup(in_file, fasta_file, subgroup, sentence,out_f
             assigned_subg = str(row[1])
             actual_subg = str(row[6]) 
             
+
+            #need to add functionality to deal with intrasubgroup subgs
             #False negative
             if phrases(subgroup, actual_subg) == True and \
             phrases(sentence,assigned_subg) == False:
-                
                 seq_ids_FN.append(seq_id)
                 hsubgroup_assignment_FN.append(row[1])
+
             #False positive
             elif phrases(subgroup, actual_subg) == False and \
             phrases(sentence,assigned_subg) == True:
                 seq_ids_FP.append(seq_id)
                 hsubgroup_assignment_FP.append(row[6])
                 
-          
-        
         if misclassified_type == 'FP':
             for seq_id in seq_ids_FP:
-                seq_id = seq_id[:-1] #remove second space after ID (comes from list)
+                seq_id = seq_id[:-1]    #remove second space after ID
                 for record in SeqIO.parse(fasta_file,'fasta'):
                     if record.id == seq_id:
                         record.id = record.id[-10:] #keep acc code only
                         record_seq = str(record.seq)
-                        header = '>' + subgroup + '_' + misclassified_type + '|' +record.id
+                        header = '>' + subgroup + '_' + misclassified_type \
+                                + '|' +record.id
                         sys.stdout.write(header+'\n'+ record_seq+'\n')
+            #Returns hsubgroup's prediction to console
             if pull_assignment == True:
                 return hsubgroup_assignment_FP
                         
@@ -68,20 +69,25 @@ def extract_misclassified_subgroup(in_file, fasta_file, subgroup, sentence,out_f
                         record_seq = str(record.seq)
                         header = '>' + subgroup + '_' + misclassified_type + '|' +record.id                       
                         sys.stdout.write(header+'\n'+ record_seq+'\n')
+            #Returns BLAST's assignment to console 
             if pull_assignment==True:
-                 return hsubgroup_assignment_FN
-             
-                
+                 return hsubgroup_assignment_FN         
     sys.stdout.close
-#%%      
+    
 def extract_first_21_residues(input_file, output_file):
+    """For the sequences extracted by extract_misclassified_subgroup, extracts 
+    the first 21 residues only.
+
+    input_file = file containing sequences from previous function (.fasta)
+    out_file = named output file (.fasta)
+
+    For use in phylo trees.
+    """
     from Bio import SeqIO
     import sys 
     
     sys.stdout = open(output_file,'w+')
-    
     with open(input_file,'r') as fasta_in, open(output_file,'w+') as fasta_out:
-        
         for record in SeqIO.parse(fasta_in,'fasta'):
             print('>' + record.id)
             seq = str(record.seq)
