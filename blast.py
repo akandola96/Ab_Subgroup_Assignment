@@ -1,3 +1,4 @@
+#%%
 def extract_ref_data(in_file,organism, region, out_file):
     """Extracts data from IMGT file.
     
