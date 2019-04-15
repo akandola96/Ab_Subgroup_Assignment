@@ -199,8 +199,19 @@ def remove_short_sequences(infile,outfile):
     for record in SeqIO.parse(infile,'fasta'):
         if len(record.seq) > 20: 
             print('>' + record.id)
-            print(record.seq)          
-
+            print(record.seq)    
+#%%
+def remove_seqs_missing_residues(in_file, out_file):
+    from Bio import SeqIO
+    import sys
+    sys.stdout = open(out_file,'a')
+    for record in SeqIO.parse(in_file,'fasta'):
+        seq = str(record.seq)
+        seq = seq[:21]
+        if 'X' not in seq:
+            print('>' + record.id)
+            print(record.seq)  
+#%%
 def seqkit_clean(in_file,os,out_file):  
     """Cleans a FASTA file using SeqKit
 
