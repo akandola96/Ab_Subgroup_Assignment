@@ -96,6 +96,22 @@ def blast_output_xml2csv(in_file,alignments, out_file):
                 if count < alignments:
                     print(record.query, ',', description.title)    
                     
+def convert_queries2csv(in_file,out_file):
+    """Extracts sequences from FASTA file into csv file.
+    
+    Splices sequnce string to extract the first 21 residues only.  
+    """
+    from Bio import SeqIO
+    import sys
+    import csv
+    sys.stdout = open(out_file,'a+')
+    with open(out_file,'a+') as csv_output:
+        writer = csv.writer(csv_output,lineterminator = '\n')
+        for record in SeqIO.parse(in_file,'fasta'):
+            seq = str(record.seq)
+            seq = seq[:21]  #first 21 residues only
+            print(seq)                    
+                    
 def join_queries2blout(blout_file,queries_file,out_file):
     """Attaches query sequence to its corresponding BLAST record
     
