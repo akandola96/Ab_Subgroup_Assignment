@@ -107,7 +107,7 @@ This dictionary is required to manage the difference in outputs of BLAST (which 
   
   **attach_scores_to_queries**. As hsubgroup does not include SeqID information, it must be attached to the scores by means of this function. This function uses the FASTA formatted queries file to extract SeqIDs for each sequene and uses a zip function to write to a csv file of the format shown below:
   
-  |SeqID|Primary subgroup assignment|Score|Secondary subgroup assignment|Score|
+  |SeqID|Primary subgroup assignment|Score|Secondary subgroup assignment|Score2|
   |----|----|----|----|----|
   |MOPC'ACL|00001|Mus musculus Kappa Chain 1|98.65|Mus musculus Kappa Chain 2|67.02|
   |Anti phos CD12|02059|Mus musculus Lambda Chain 3|59.35|Mus musculus Heavy Chain 14|32.92|
