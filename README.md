@@ -109,7 +109,7 @@ This dictionary is required to manage the difference in outputs of BLAST (which 
   
   |SeqID|Primary subgroup assignment|Score|Secondary subgroup assignment|Score2|
   |----|----|----|----|----|
-  |MOPC'ACL|00001|Mus musculus Kappa Chain 1|98.65|Mus musculus Kappa Chain 2|67.02|
-  |Anti phos CD12|02059|Mus musculus Lambda Chain 3|59.35|Mus musculus Heavy Chain 14|32.92|
+  |MOPC'ACL\00001|Mus musculus Kappa Chain 1|98.65|Mus musculus Kappa Chain 2|67.02|
+  |Anti phos CD12\02059|Mus musculus Lambda Chain 3|59.35|Mus musculus Heavy Chain 14|32.92|
   
   
