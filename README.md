@@ -86,4 +86,30 @@ This dictionary is required to manage the difference in outputs of BLAST (which 
 
   **get_profiles**: Master function to generate subgroup profiles. Must be run for each distinct chain e.g. Kappa, Lambda or Heavy ; this is done by changing the *locus* variable. *in_file* is the blout_queries file produced by earlier steps. *freq_type* can be 'log' or 'normal' and dictates whether the frequency of the residues should be count/number of sequences or log((count/number of sequences) + 1.003). 1.003 is present to ensure that ordinary frequencies are converted to non-zero numbers, log(1.003) = 0.001, which is the lowest possible value that can be stored as a frequency in the profiles. *matrix_type* can be 'full' or '2line'. This function calls one of two functions depending on the *matrix_type* variable, detailed below. 
   
+  **derive_profiles_2line**:generates a 2line profile for a subgroup (1st and 2nd most common residues only). For each row in the blout_queries file, if the record alignment is found to contain the subgroup in question the query residues are added to distinct list. The first residue is added to the list pos1, the second residue to the list pos2, the third residue to the list pos3 and so on. From each of these lists the most commonly occuring and the second most commonly occuring residues are calculated as well as their frequencies. Passing *freq_type* as 'log' modifies the frequency such that f1 = log(f0 + 1.003), where f0 is the original frequency and f1 is the new frequency. 
+  
+  **derive_profiles_full**: generates a full profile for a subgroup (frequency of every residue at every position). For each row in the blout_querie. file, if the record alignment is found to contain the subgroup in question the query residues are added to distinct list. The first residue is added to the list pos1, the second residue to the list pos2, the third residue to the list pos3 and so on. From these lists, the frequency of every residue at every position is calculated. 
+  
+  ## Core Analysis
+  
+  ### Calculates the MCC for each subgroup. Culminates in a CSV file containing the MCC for each subgroup as well as other performance measures. 
+  
+  **fasta2pir**: hsubgroup requires that query sequences be in PIR format. This function takes a FASTA formatted queries file as *infile* and converts applies PIR formatting 
+  
+  **run_hsubgroup**. Takes the .txt file containing all subgroup profiles, as well as the PIR formatted queries file produced by **fasta2pir** as *matrix_file* and *query_file* respectively. Various parameters modify the action of hsubgroup: if the the profiles being used are 2line then *matrix_type* should be set to '2line', otherwise 'full'. If score calculation is desired to be based on logarithmic profiles then *score_type* should be set to 'product', otherwise 'sum'. For eeach query sequence two scores are generated, producing a CSV file of the form shown below:
+  
+  |Primary subgroup assignment|Score|Secondary subgroup assignment|Score|
+  |----|----|----|----|
+  |Mus musculus Kappa Chain 1|98.65|Mus musculus Kappa Chain 2|67.02|
+  |Mus musculus Lambda Chain 3|59.35|Mus musculus Heavy Chain 14|32.92|
+  
+  This is referred to as the *scores_file*
+  
+  **attach_scores_to_queries**. As hsubgroup does not include SeqID information, it must be attached to the scores by means of this function. This function uses the FASTA formatted queries file to extract SeqIDs for each sequene and uses a zip function to write to a csv file of the format shown below:
+  
+  |SeqID|Primary subgroup assignment|Score|Secondary subgroup assignment|Score|
+  |----|----|----|----|----|
+  |MOPC'ACL|00001|Mus musculus Kappa Chain 1|98.65|Mus musculus Kappa Chain 2|67.02|
+  |Anti phos CD12|02059|Mus musculus Lambda Chain 3|59.35|Mus musculus Heavy Chain 14|32.92|
+  
   
