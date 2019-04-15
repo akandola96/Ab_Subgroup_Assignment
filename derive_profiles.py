@@ -1,3 +1,4 @@
+#%%
 def phrases(phrase,text):
     """Replaces using 'in', which is non-specific.
     
@@ -90,7 +91,7 @@ def get_numerics(locus,organism, in_file):
                         numeric_list.append(query)      #update list
                         break
             
-            #handles inconsistent labelling in o.cuniculus
+            # Handles inconsistent labelling in o.cuniculus
             elif organism == 'Oryctolagus cuniculus':   
                 for row in reader:
                     blast = str(row[1])
@@ -101,7 +102,7 @@ def get_numerics(locus,organism, in_file):
                         break
                 
         return numeric_list
-#%%               
+             
 def get_profiles(locus, infile, out_file,query_organism,freq_type,matrix_type):
     """Master function to derive the profiles of a loci's subgroups.
     
@@ -206,13 +207,14 @@ def derive_profiles_2line(in_file, query_subgroup,freq_type,out_file):
         tops2 = []
         freqs = []      
         freqs2 = []
+        intra_subgroups = query_subgroup + 'S'
         
         #Fill position lists        
         for row in reader:
             subgroup = str(row[1])         #Row contains BLAST record
             
             #if the query subgroup is found in the blast record
-            if phrases(query_subgroup,subgroup) == True:
+            if phrases(query_subgroup,subgroup) == True or intra_subgroups in subgroup:
                 x = 0                 
             #add 1st residue to pos1 list, 2nd residue to pos2 list...
                 for i in list_names:
@@ -317,14 +319,15 @@ def derive_profiles_full(in_file, query_subgroup,freq_type,out_file):
         list_names = [pos1,pos2,pos3,pos4, pos5, pos6, pos7, pos8, pos9, pos10, 
                       pos11, pos12, pos13, pos14, pos15, pos16, pos17, pos18, 
                       pos19, pos20, pos21]
-        
+        intra_subgroups = query_subgroup + 'S'
         
         
         for row in reader:
             subgroup = str(row[1])
             
             #if subgroup is present in blast record
-            if phrases(query_subgroup,subgroup) == True: 
+            if phrases(query_subgroup,subgroup) == True or intra_subgroups in \
+            subgroup:
             #if query_subgroup in subgroup:  #nonspecific variant. oryctolagus
                 x = 0
                 #for each sequence, what residue is at position x. Build a 
