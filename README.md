@@ -117,10 +117,12 @@ This dictionary is required to manage the difference in outputs of BLAST (which 
   **make_final_results** is attaches the *blout_queries* file, produced in the BLAST.py steps to the *seqs_scores_file*, produced by the steps immediately above. It produces a CSV file of the format shown below 
   
   
-  
   |SeqID|Primary subgroup assignment|Score|Secondary subgroup assignment|Score2|SeqID|BLAST Record|Residues|Organism|
   |----|----|----|----|----|----|----|----|----|
   |MOPC'ACL\00001|Mus musculus Kappa Chain 1|98.65|Mus musculus Kappa Chain 2|67.02|MOPC'ACL\00001|refseq 5515\mus musculus\IGKV1-04|EVQL...|Mus musculus|
-  |Anti phos CD12\02059|Mus musculus Lambda Chain 3|59.35|Mus musculus Heavy Chain 14|32.92|Anti phos CD12\02059|refseq 6229\mus musculus\IGKV3-04|LSTV...|Mus musculus|
+  |Anti phos CD12\02059|Mus musculus Lambda Chain 3|40.35|Mus musculus Heavy Chain 14|28.92|Anti phos CD12\02059|refseq 6229\mus musculus\IGKV3-04|LSTV...|Mus musculus|
   
+ This is referred to as the *full_results* file and it is the main file used for analysis of classifier performance. 
+ 
+ **check_assignment**: Function derives the MCC for each subgroup, using the *full_results* file to do so. In the example of the *full_results* file shown above, **check_assignment** compares the primary assignment made by hsubgroup, in column 2 to the assignment made by BLAST via column 7. In the first row of this example file, hsugbroup has made the correct assignment of IGKV1. In the second row, hsubgroup has made an incorrect assignment; the subgroup assignment in column 2 does not match that in column 7. This incorrect assignment is also reflected by a low primary score by hsubgroup, indicating that the classifier is not 'confident' in its assignment. The output of this function is a .csv file containing performance measures for each subgroup. The 9th column contains the query organism for downstream analysis. 
   
