@@ -36,7 +36,7 @@ def xml_parser(input_file,query_organism,output_file_name):
                         accession = chain.find('accession').text 
                         name = chain.find('name').text
                         organism = chain.find('organism').text
-                        if organism in query_organism:  #write ID and acc                     
+                        if organism in query_organism:  # Write ID and acc                     
                             name = name.replace(',','') 
                             sys.stdout.write('>' + ',' + name + ',' 
                                              + accession + '\n')
@@ -58,8 +58,8 @@ def xml_parser(input_file,query_organism,output_file_name):
                             sys.stdout.write('*' + ',' + '*' +',' + '*' + '\n') 
             
             
-            #Will rewrite in later release to avoid code duplication
-            elif not warning_present:                   #if no warning present
+            # Will rewrite in later release to avoid code duplication
+            elif not warning_present:                   # If no warning present
                 accession = chain.find('accession').text
                 name = chain.find('name').text
                 organism = chain.find('organism').text
