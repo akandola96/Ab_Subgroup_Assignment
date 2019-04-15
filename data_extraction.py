@@ -1,3 +1,4 @@
+#%%
 def xml_parser(input_file,query_organism,output_file_name):
     """Extracts raw sequence data from abysis
 
