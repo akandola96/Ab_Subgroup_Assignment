@@ -346,7 +346,7 @@ def derive_profiles_full(in_file, query_subgroup,freq_type,out_file):
                       'P','Q','R','S','T','V','W','Y','X']
             value_store = []            #stores frequencies
             
-            #calculate frequency of each amino acid at each position
+            # Calculate frequency of each amino acid at each position
             for amino in aminos:
                 freq = position.count(amino)/length #calculates frequncy
                 if freq_type == 'log':
@@ -354,14 +354,14 @@ def derive_profiles_full(in_file, query_subgroup,freq_type,out_file):
                     freq = math.log(freq,10)
                 freq= '%.3f' % freq                                 
                 value_store.append(freq)            #appends frequency list          
-            total_store.append(value_store)         #appends a list of lists
+            total_store.append(value_store)         #appends list of lists
                 
         amino_counter = -1                          
         for amino in aminos:
             amino_counter +=1                       #look at list position 0 
-            sys.stdout.write(amino + ' ')           #write the residue and a spcae
+            sys.stdout.write(amino + ' ')           #write residue and space
             
-            for l in total_store:                   #for each list in the list of lists
-                value = l[amino_counter]            #get the freq of the residue at each position
+            for l in total_store:                   #for each list 
+                value = l[amino_counter]            #get res freq 
                 sys.stdout.write(value + ' ')            
             sys.stdout.write('\n')  

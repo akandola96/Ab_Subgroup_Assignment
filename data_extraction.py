@@ -22,17 +22,17 @@ def xml_parser(input_file,query_organism,output_file_name):
     import xml.etree.ElementTree as ET
     import sys
     sys.stdout = open(output_file_name, 'a')
-    tree = ET.parse(input_file)                         #builds the XML tree
-    root = tree.getroot()                               #gets the tree root
+    tree = ET.parse(input_file)                         # Builds the XML tree
+    root = tree.getroot()                               # Gets the tree root
     query_organism = query_organism.lower()
     for antibody in root.iter('antibody'):
-        for chain in antibody.iter('chain'):            #iterate chains
-            warning_present = chain.findall('warning')  #check for warning 
+        for chain in antibody.iter('chain'):            # Iterate chains
+            warning_present = chain.findall('warning')  # Check for warning 
             if warning_present:                          
                 
                 for warning in chain.iter('warning'):
                     wtype = warning.attrib['type']
-                    if wtype != 'pseudogene':           #if not pseudogene        
+                    if wtype != 'pseudogene':           # If not pseudogene        
                         accession = chain.find('accession').text 
                         name = chain.find('name').text
                         organism = chain.find('organism').text
@@ -41,7 +41,7 @@ def xml_parser(input_file,query_organism,output_file_name):
                             sys.stdout.write('>' + ',' + name + ',' 
                                              + accession + '\n')
                             
-                            #residues for loop
+                            # Residues for-loop
                             for residue in chain.iter('residue'):
                                 aa = residue.attrib['aa']
                                 pos = residue.attrib['pos']
@@ -200,18 +200,19 @@ def remove_short_sequences(infile,outfile):
         if len(record.seq) > 20: 
             print('>' + record.id)
             print(record.seq)    
-#%%
+
 def remove_seqs_missing_residues(in_file, out_file):
+    """Removes sequences with missing residues in their N-terminus"""
     from Bio import SeqIO
     import sys
     sys.stdout = open(out_file,'a')
     for record in SeqIO.parse(in_file,'fasta'):
         seq = str(record.seq)
-        seq = seq[:21]
+        seq = seq[:21]      # First 21 residues only
         if 'X' not in seq:
             print('>' + record.id)
             print(record.seq)  
-#%%
+
 def seqkit_clean(in_file,os,out_file):  
     """Cleans a FASTA file using SeqKit
 
@@ -220,10 +221,12 @@ def seqkit_clean(in_file,os,out_file):
 
     if os == 'Windows':
         import subprocess 
-        cmd = ('type ' + in_file +' | seqkit rmdup -n | seqkit rmdup -s -o ' + out_file)
+        cmd = ('type ' + in_file +' | seqkit rmdup -n | seqkit rmdup -s -o ' 
+               + out_file)
         subprocess.Popen(cmd,shell=True)
     elif os == 'Linux':
-        cmd = ('cat ' + in_file +' | seqkit rmdup -n | seqkit rmdup -s -o ' + out_file)
+        cmd = ('cat ' + in_file +' | seqkit rmdup -n | seqkit rmdup -s -o ' 
+               + out_file)
         subprocess.Popen(cmd)
        
 def convert_seqkit(infile,outfile):

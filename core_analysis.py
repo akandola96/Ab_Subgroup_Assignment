@@ -1,3 +1,4 @@
+#%%
 def phrases(phrase,text):
     """Replaces using 'in', which is non-specific.
     
@@ -118,7 +119,7 @@ def make_final_results(in_file,blout_file,organism,out_file):
             blout_row = ','.join(blout_row)            
             print(seqs_scores_row + ',' + blout_row + ',' + organism)
                                  
-#%%
+
 def check_assignment(in_file,blout_queries_file,organism,out_file):
     """Determines the MCC of each subgroup and outputs to file.
     
