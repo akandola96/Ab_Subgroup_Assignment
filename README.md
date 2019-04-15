@@ -57,7 +57,9 @@ The **extract_ref_data** function is used to extract reference query data from a
 
 The **count_xml_blast_records** function simply counts the number of BLAST records produced. This number should agree with the number of sequences counted by the **count_num_queries** function, and is used solely to check this. 
 
-**blast_output_xml2csv** converts the output of **tBLASTn_full** from XML to CSV. Extracts only the top alignment (by E-value) for each BLAST record. The query ID and alignment description are outputted to a new CSV file. 
+**blast_output_xml2csv** converts the output of **tBLASTn_full** from XML to CSV. Extracts only the top alignment (by E-value) for each BLAST record. The query ID and alignment description are outputted to a new CSV file.
+
+**convert_queries2csv** converts FASTA formatted query sequences into a csv file, extracting only the first 21 residues of each sequence. This CSV file is then joined to the BLAST output CSV file to create the blout_queries file. 
 
 **join_queries2blout**: Attaches query sequences (residues) to the output of the file produced by **blast_output_xml2csv**. Resultant file is of the format shown below. Query sequence residues up to the 21st residue are included. This file is referred to as the **blout_queries** for the remainder of this ReadMe
 
@@ -82,4 +84,6 @@ This dictionary is required to manage the difference in outputs of BLAST (which 
 
 **get_numerics**: Root of all functions used to derive subgroup profiles. BLAST alignment description contains subgroup info in the form of IGHV1, IGHV2 etc. **get_numerics** creates strings e.g. IGHV1, IGHV2, IGHV3, IGHV4 ... IGHV30 and determines whether this string can be found in any of the BLAST alignment descriptions. If it is found, this subgroup is added to a list of confirmed subgroups, from which other functions work. *in_file* is the **blout queries file** shown above. 
 
-  **get_profiles**: Master function to generate subgroup profiles.
+  **get_profiles**: Master function to generate subgroup profiles. Must be run for each distinct chain e.g. Kappa, Lambda or Heavy ; this is done by changing the *locus* variable. *in_file* is the blout_queries file produced by earlier steps. *freq_type* can be 'log' or 'normal' and dictates whether the frequency of the residues should be count/number of sequences or log((count/number of sequences) + 1.003). 1.003 is present to ensure that ordinary frequencies are converted to non-zero numbers, log(1.003) = 0.001, which is the lowest possible value that can be stored as a frequency in the profiles. *matrix_type* can be 'full' or '2line'. This function calls one of two functions depending on the *matrix_type* variable, detailed below. 
+  
+  
