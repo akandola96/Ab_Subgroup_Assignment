@@ -80,7 +80,6 @@ This dictionary is required to manage the difference in outputs of BLAST (which 
 
 **get_sentences**. Converts the 'numeric' subgroup codes derived from the **get_numerics** function into sentences e.g. IGHV1 to Mus musculus Heavy Chain 1.
 
-**get_numerics**. Root of all functions used to derive subgroup profiles. BLAST alignment description contains subgroup info in the form of IGHV1, IGHV2 etc. **get_numerics** creates strings e.g. IGHV1, IGHV2, IGHV3, IGHV4 ... IGHV30 and determines whether this string can be found in any of the BLAST alignment descriptions. If it is found, this subgroup is added to a list of confirmed subgroups, from which other functions work. *in_file* is the **blout queries file** shown above. 
+**get_numerics**: Root of all functions used to derive subgroup profiles. BLAST alignment description contains subgroup info in the form of IGHV1, IGHV2 etc. **get_numerics** creates strings e.g. IGHV1, IGHV2, IGHV3, IGHV4 ... IGHV30 and determines whether this string can be found in any of the BLAST alignment descriptions. If it is found, this subgroup is added to a list of confirmed subgroups, from which other functions work. *in_file* is the **blout queries file** shown above. 
 
-
-
+  **get_profiles**: Master function to generate subgroup profiles.
