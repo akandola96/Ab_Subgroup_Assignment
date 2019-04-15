@@ -112,4 +112,15 @@ This dictionary is required to manage the difference in outputs of BLAST (which 
   |MOPC'ACL\00001|Mus musculus Kappa Chain 1|98.65|Mus musculus Kappa Chain 2|67.02|
   |Anti phos CD12\02059|Mus musculus Lambda Chain 3|59.35|Mus musculus Heavy Chain 14|32.92|
   
+  This is referred to as the *seqs_scores_file*. 
+  
+  **make_final_results** is attaches the *blout_queries* file, produced in the BLAST.py steps to the *seqs_scores_file*, produced by the steps immediately above. It produces a CSV file of the format shown below 
+  
+  
+  
+  |SeqID|Primary subgroup assignment|Score|Secondary subgroup assignment|Score2|SeqID|BLAST Record|Residues|Organism|
+  |----|----|----|----|----|----|----|----|----|
+  |MOPC'ACL\00001|Mus musculus Kappa Chain 1|98.65|Mus musculus Kappa Chain 2|67.02|MOPC'ACL\00001|refseq 5515\mus musculus\IGKV1-04|EVQL...|Mus musculus|
+  |Anti phos CD12\02059|Mus musculus Lambda Chain 3|59.35|Mus musculus Heavy Chain 14|32.92|Anti phos CD12\02059|refseq 6229\mus musculus\IGKV3-04|LSTV...|Mus musculus|
+  
   
