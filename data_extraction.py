@@ -202,17 +202,22 @@ def remove_short_sequences(infile,outfile):
             print('>' + record.id)
             print(record.seq)    
 
-def remove_seqs_missing_residues(in_file, out_file):
+def remove_seqs_missing_residues(in_file,version,out_file):
     """Removes sequences with missing residues in their N-terminus"""
     from Bio import SeqIO
     import sys
     sys.stdout = open(out_file,'a')
     for record in SeqIO.parse(in_file,'fasta'):
         seq = str(record.seq)
-        seq = seq[:21]      # First 21 residues only
-        if 'X' not in seq:
-            print('>' + record.id)
-            print(record.seq)  
+        seq_21 = seq[:21]      # First 21 residues only
+        if version == 'EA':
+            if 'X' not in seq_21:
+                print('>' + record.id)
+                print(record.seq)  
+        elif version == 'T6':
+            if 'XXXXXXX' not in seq_21:
+                print('>' + record.id)
+                print(record.seq)
 
 def seqkit_clean(in_file,os,out_file):  
     """Cleans a FASTA file using SeqKit
