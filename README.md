@@ -130,3 +130,9 @@ This dictionary is required to manage the difference in outputs of BLAST (which 
  This is referred to as the *full_results* file and it is the main file used for analysis of classifier performance. 
  
  **check_assignment**: Function derives the MCC for each subgroup, using the *full_results* file to do so. In the example of the *full_results* file shown above, **check_assignment** compares the primary assignment made by hsubgroup, in column 2 to the assignment made by BLAST in column 7. In the first row of this example file, hsugbroup has made the correct assignment of IGKV1. In the second row, hsubgroup has made an incorrect assignment; the subgroup assignment in column 2 does not match that in column 7. This incorrect assignment is also reflected by a low primary score by hsubgroup, indicating that the classifier is not 'confident' in its assignment. The output of this function is a .csv file containing performance measures for each subgroup. The 9th column contains the query organism, used in downstream analysis.
+
+ ## Misclassified Analysis 
+
+ ### Determines misclassified sequences for a given subgroup (FN or FP, user defined). Output files contain FASTA formatted sequences to be opened in JalView for alignment with MUSCLE and subsequent construction of phylogenetic trees.
+
+ **extract_misclassified_subgroup**: For a given subgroup, extracts misclassifed sequences; outputs to a FASTA file. Actual subgroup assignment is outputted to console (provided user passes *pull_assignment* as *true*. FN or FP can be selected by the *misclassified_type* variable.
