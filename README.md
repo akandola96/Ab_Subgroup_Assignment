@@ -134,4 +134,8 @@ This dictionary is required to manage the difference in outputs of BLAST (which 
  
 ## Misclassified analysis 
 
-**extract_misclassified_subgroup**: Function extracts all sequences of a certain subgroup that have been misclassified. Us
+**extract_misclassified_subgroup**: Function extracts all sequences of a certain subgroup that have been misclassified. User defines *misclassified_type* as either 'FN' or 'FP' to select which type of misclassification. Passing *pull_assignment* as True outputs the actual subgroup assignment of these sequences to the console.
+
+**extract_random_TPs**: Based on the above function, the user will know the correct assignment of these misclassified sequences (provided they passed *pull_assignment* as *True*). The **extract_random_TPs** function extracts random true positive sequences for a given subgroup. 
+
+**extract_first_21_residues**:A comparative phylogenetic tree can be created utilsing the first 21 residues of each sequence derived from the above functions. This function extracts the first 21 residues of each sequence for future alignment. 
