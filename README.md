@@ -130,12 +130,3 @@ This dictionary is required to manage the difference in outputs of BLAST (which 
  This is referred to as the *full_results* file and it is the main file used for analysis of classifier performance. 
  
  **check_assignment**: Function derives the MCC for each subgroup, using the *full_results* file to do so. In the example of the *full_results* file shown above, **check_assignment** compares the primary assignment made by hsubgroup, in column 2 to the assignment made by BLAST in column 7. In the first row of this example file, hsugbroup has made the correct assignment of IGKV1. In the second row, hsubgroup has made an incorrect assignment; the subgroup assignment in column 2 does not match that in column 7. This incorrect assignment is also reflected by a low primary score by hsubgroup, indicating that the classifier is not 'confident' in its assignment. The output of this function is a .csv file containing performance measures for each subgroup. The 9th column contains the query organism, used in downstream analysis. 
- 
- 
-## Misclassified analysis 
-
-**extract_misclassified_subgroup**: Function extracts all sequences of a certain subgroup that have been misclassified. User defines *misclassified_type* as either 'FN' or 'FP' to select which type of misclassification. Passing *pull_assignment* as True outputs the actual subgroup assignment of these sequences to the console.
-
-**extract_random_TPs**: Based on the above function, the user will know the correct assignment of these misclassified sequences (provided they passed *pull_assignment* as *True*). The **extract_random_TPs** function extracts random true positive sequences for a given subgroup. 
-
-**extract_first_21_residues**:A comparative phylogenetic tree can be created utilsing the first 21 residues of each sequence derived from the above functions. This function extracts the first 21 residues of each sequence for future alignment. 
