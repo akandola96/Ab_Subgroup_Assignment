@@ -1,11 +1,15 @@
 #%%
 def xml_parser(input_file,query_organism,output_file_name):
-    """Extracts raw sequence data from abysis
-
+    """
+    Summary:
+    Extracts raw sequence data from abysis.
+    
+    Args:
     input_file = abysis data file (.xml)
     query_organism = organism name as found in abysis. Can also do genus (str)
     output_file_name = named output file (.csv)
     
+    Desc: 
     Uses element tree to derive the XML tree and iterates through data by
     antibody chain. Extracts all non-pseudogene sequences beloning to query
     organism.
@@ -110,7 +114,12 @@ def original_make_fasta(input_file,output_file_name):
             sys.stdout.write(row[0])
          
 def make_fasta(input_file,version,output_file_name):
-    """Converts extracted abYsis data into FASTA format. Two versions.
+    """
+    Summary:
+    Converts extracted abYsis data into FASTA format. Two versions:
+    placeholders or remove all.
+    
+    Args:
     input_file = extracted abysis data file (.csv)
     version = 'EA' or 'T6' (str)
         EA = Excludes all sequences for which Chothia/Kabat numbering begins
@@ -118,7 +127,8 @@ def make_fasta(input_file,version,output_file_name):
         T6 = Allows sequences with up to 6 missing N-terminal residues. X's 
         inserted instead.
     output_file_name = named output file (.fasta)
-
+    
+    Desc:
     Outer for loop scans through abYsis document and looks for '>', the start 
     of a sequence. Once this is a found a nested for loop iterates through the 
     first residue only. If this is found to begin on Chothia 1 then sequence is
@@ -126,8 +136,6 @@ def make_fasta(input_file,version,output_file_name):
 
     Keeps sequences w/ insertions provided sequence does not begin on an 
     insertion.
-
-    keep_marker boolean determines whether a sequence should be kept or not
     """
     import csv
     import sys
@@ -178,22 +186,35 @@ def make_fasta(input_file,version,output_file_name):
                 sys.stdout.write(row[0])                    
                                
 def remove_spaces(in_file):
-    """Removes spaces in a fasta file
+    """
+    Summary:
+    Removes spaces in a fasta file.
     
-    Used to handle inconsistent labelling of IDs etc. 
+    Args:
+    in_file = input file (.fasta)
+    
+    Desc:
+    Used to handle inconsistent labelling in IDs.
     
     """   
     with open(in_file,'r') as file:
         lines = file.readlines()
         
-    #replace spaes with empty string 
+    # Replace spaces with empty string 
     lines = [line.replace(' ','') for line in lines]
     
     with open(in_file,'w') as file:
         file.writelines(lines)
    
 def remove_short_sequences(infile,outfile):
-    """Removes FASTA sequences of less than 21 residues"""    
+    """
+    Summary:
+    Removes FASTA sequences of less than 21 residues
+    
+    Args:
+    infile = input file (.fasta)
+    outfile = output file (.fasta)
+    """    
     from Bio import SeqIO
     import sys 
     sys.stdout = open(outfile,'a')
@@ -203,7 +224,22 @@ def remove_short_sequences(infile,outfile):
             print(record.seq)    
 
 def remove_seqs_missing_residues(in_file,version,out_file):
-    """Removes sequences with missing residues in their N-terminus"""
+    """
+    Summary:
+    Removes sequences with unknown residues in their N-terminus
+    
+    Args:
+    in_file = input file (.fasta)
+    version = 'EA' or 'T6' (str)
+        EA = removes all sequences with an 'X' present in first 21 residues 
+        T6 = removes all sequences with more than 6 continuous X residues in 
+        first 21 residues
+    out_file = output file (.fasta)
+    
+    Notes:
+    Will be merged with remove_short_sequences function in later release
+    
+    """
     from Bio import SeqIO
     import sys
     sys.stdout = open(out_file,'a')
@@ -220,23 +256,43 @@ def remove_seqs_missing_residues(in_file,version,out_file):
                 print(record.seq)
 
 def seqkit_clean(in_file,os,out_file):  
-    """Cleans a FASTA file using SeqKit
+    """
+    Summary:
+    Removes duplicates in a FASTA file by seq identified and seq record.
+    
+    Args:
+    in_file = input file (.fasta)
+    os = 'windows' or 'linux' (str)
+        Need to differentiate between using 'type' or 'cat' on command line
+    out_file = output file (.fasta)
 
     FASTA sequences of duplicate ID or Sequence are deleted
     """
 
-    if os == 'Windows':
+    if os == 'windows':
         import subprocess 
         cmd = ('type ' + in_file +' | seqkit rmdup -n | seqkit rmdup -s -o ' 
                + out_file)
         subprocess.Popen(cmd,shell=True)
-    elif os == 'Linux':
+    elif os == 'linux':
         cmd = ('cat ' + in_file +' | seqkit rmdup -n | seqkit rmdup -s -o ' 
                + out_file)
         subprocess.Popen(cmd)
        
 def convert_seqkit(infile,outfile):
-    """Converts ouput of seqkit into more readable format"""
+    """
+    Summary:
+    Converts ouput of seqkit into more readable format
+    
+    Args:
+    infile = input file (.fasta)
+    outfile = output file (.fasta)
+    
+    Desc:
+    Output of SeqKit is a FASTA file with no spaces or new line chars. This 
+    func simply reformats to make more readable.
+    
+    """
     from Bio import SeqIO
     import sys 
     sys.stdout = open(outfile,'a')
@@ -246,7 +302,16 @@ def convert_seqkit(infile,outfile):
         print(str(record.seq))
                
 def count_num_queries(in_file):
-    """Counts number of sequences in a fasta file"""
+    """
+    Summary:
+    Counts number of sequences in a fasta file
+    
+    Args:
+    in_file = input file (.fasta)
+    
+    Desc:
+    Used for figure making. Not essential. 
+    """
     from Bio import SeqIO
     count = 0 
     for record in SeqIO.parse(in_file,'fasta'):

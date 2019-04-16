@@ -1,12 +1,16 @@
 #%%
 def extract_ref_data(in_file,organism, region, out_file):
-    """Extracts data from IMGT file.
+    """
+    Summary:
+    Extracts data from IMGT file.
     
+    Args:
     in_file = IMGT data file (.fasta)
-    organism = organism name as found in IMGT data
-    region = antibody chain region e.g. V, D, J
+    organism = organism name as found in IMGT data (str)
+    region = antibody chain region e.g. V, D, J (str)
     out_file = named output file (.fasta)
     
+    Desc:
     Excludes sequences that are not functional genes.  
     """  
     from Bio import SeqIO
@@ -24,15 +28,20 @@ def extract_ref_data(in_file,organism, region, out_file):
                      print(seq_record.seq)                    
                  
 def make_ref_blastdb(in_file,db_name):
-    """Creates a reference nucleotide BLAST database from extracted IMGT 
+    """
+    Summary:
+    Creates a reference nucleotide BLAST database from extracted IMGT 
     sequences.
     
-    Nucleotide database. Parses SeqIDs.
+    Args:
+    in_file = input IMGT data file (.fasta)
+    db_name = name of resultant database produced by this func (str)
+    
+    Desc:
+    Makes a nucleotide database, also parses SeqIDs.
 
-    Should be no duplicate sequences due to SeqKit steps. If duplicate 
-    sequences are present, database construction will fail. 
-
-    Runs a command line process.    
+    Will not work if duplicate sequences present in in_file.
+    Runs a command line process via Python's subprocess module.   
     """
     import subprocess
     cmd = ('makeblastdb -in ' +in_file + ' -out '+db_name 
@@ -41,15 +50,19 @@ def make_ref_blastdb(in_file,db_name):
 
 
 def tBLASTn_full(queries,db_name,out_file):
-    """Runs tBLASTn using IMGT reference data and abysis query sequences.
+    """
+    Summary:
+    Runs tBLASTn using IMGT reference data and abysis query sequences.
     
+    Args:
     queries = query file (.fasta)
     db_name = name of BLAST database
     out_file = named output file (.xml)
     
+    Desc:
     soft_masking false --> masking off  
 
-    Runs a full tBLASTn search, all hits are included. 
+    Runs a full tBLASTn search, all hits are included. Parsed later. 
     """    
     import subprocess 
     with open(out_file,'a') as out:
@@ -60,7 +73,17 @@ def tBLASTn_full(queries,db_name,out_file):
 
         
 def count_xml_blast_records(in_file):
-    """Counts the number of BLAST records in a BLAST output file"""
+    """
+    Summary:
+    Counts the number of BLAST records in a BLAST output file
+    
+    Args:
+    in_file = input file (.xml)
+    
+    Desc:
+    Not essential.
+    
+    """
     from Bio.Blast import NCBIXML
     blast_record_count = 0 
     handle = open(in_file)    
@@ -73,16 +96,20 @@ def count_xml_blast_records(in_file):
     
  
 def blast_output_xml2csv(in_file,alignments, out_file):
-    """Extracts top hit (E-value) from XML formatted BLAST output. Converts to
-    CSV format.
-   
-    in_file = raw blast xml output.
-    alignments = number of alignments desired from each record.
+    """
+    Summary:
+    Extracts top hit from XML formatted BLAST output. Converts to
+    CSV format. 
+    
+    Args:
+    in_file = raw blast xml output (.xml)
+    alignments = number of alignments desired from each record (int)
     out_file = csv file containing a user defined number of alignments for each 
-    blast record.
-
+    blast record (csv)
+    
+    Desc:
     Records in XML file are ordered by E-value. Parsing the first record thus 
-    gives the best hit.
+    gives the best hit by e-value. 
     """    
     from Bio.Blast import NCBIXML
     import sys
@@ -99,9 +126,16 @@ def blast_output_xml2csv(in_file,alignments, out_file):
                     print(record.query, ',', description.title)    
                     
 def convert_queries2csv(in_file,out_file):
-    """Extracts sequences from FASTA file into csv file.
+    """
+    Summary:
+    Extracts sequences from FASTA file into csv file (first 21 residues only).
     
-    Splices sequnce string to extract the first 21 residues only.  
+    Args:
+    in_file = input file (.fasta)
+    out_file = output file (.fasta)
+    
+    Desc:    
+    Slices sequnce string to extract the first 21 residues only.  
     """
     from Bio import SeqIO
     import sys
@@ -115,12 +149,16 @@ def convert_queries2csv(in_file,out_file):
             print(seq)                    
                     
 def join_queries2blout(blout_file,queries_file,out_file):
-    """Attaches query sequence to its corresponding BLAST record
+    """
+    Summary:
+    Attaches query sequence to its corresponding BLAST record.
     
-    blout_file = BLAST output file (.csv)
-    queries_file = Queries containing file (.csv)
+    Args:    
+    blout_file = Converted BLAST output file (.csv)
+    queries_file = CSV file containing first 21 res of each query (.csv)
     out_file = Named output file (.csv)
     
+    Desc:    
     Goes through rows in both blout_file and queries_file and writes both to 
     a new row in a new file (output file). Uses a zip function to do so.
 

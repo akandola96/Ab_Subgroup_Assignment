@@ -1,7 +1,14 @@
 #%%
 def phrases(phrase,text):
-    """Replaces using 'in', which is non-specific.
+    """
+    Summary:
+    Replaces using 'in', which is non-specific.
     
+    Args:
+    phrase = text to find (str)
+    text = text to search in (str)
+    
+    Desc:    
     Returns true if EXACT match between strings is found, false oteherwise. 
     Case insensitive.
     Can differentiate between IGHV1 and IGHV10, which 'in' cannot.
@@ -10,8 +17,15 @@ def phrases(phrase,text):
     return re.search(r"\b{}\b".format(phrase), text, re.IGNORECASE) is not None
 
 def determine_subgroups(in_file,organism):
-    """Master function to determine subgroups to make profiles for.
+    """
+    Summary:
+    Master function to determine subgroups to make profiles for.
     
+    Args:
+    in_file = input file. Should be blout_queries. (.csv)
+    organism = organism name 
+    
+    Desc:    
     Utilises get_sentences and get_numerics functions to create a dictionary 
     of the form below:
     {Mus Musculus Heavy Chain 1:IGHV1, Mus musculus Heavy Chain 2:IGHV2}.
@@ -26,13 +40,17 @@ def determine_subgroups(in_file,organism):
     return subgroup_dict 
 
 def get_sentences(locus, in_file, organism):
-    """Converts subgroup numeric representation to a sentence and creates 
+    """
+    Summary:
+    Converts subgroup numeric representation to a sentence and creates 
     dictionary based on this.
-
-    locus = Chain type to run (str)
-    in_file = blout_queries file 
+    
+    Args:
+    locus = locus type to examine (str)
+    in_file = blout_queries file (.csv)
     organism = query organism (str)
     
+    Desc:    
     E.g. IGHV1 --> Mus musculus Heavy Chain 1.  
     
     Dictionary of form:
@@ -53,13 +71,17 @@ def get_sentences(locus, in_file, organism):
     return locus_dict
   
 def get_numerics(locus,organism, in_file):
-    """Determines the number of subgroups in each locus being examined.
+    """
+    Summary:
+    Determines the 'numeric' of each subgroups in each locus.
     
-    locus = Kappa, Lambda or Heavy.
-    organism = organism name e.g. Mus musculus.
+    Args:    
+    locus = Kappa, Lambda or Heavy (str)
+    organism = organism name e.g. Mus musculus (str)
     in_file = file containing query seqeunces matched to their BLAST record
-        (this is the blout_queries file)
-    
+        (this is the blout_queries file) (.csv)
+        
+    Desc:    
     BLAST record contains subgroup assignment e.g. IGHV1, IGHV2...
     Function works by creating a string e.g. IGHV1, IGHV2 ... IGHV30 for each
     possible subgroup (up to 30) and determines whether this string is present 
@@ -104,7 +126,9 @@ def get_numerics(locus,organism, in_file):
         return numeric_list
              
 def get_profiles(locus, infile, out_file,query_organism,freq_type,matrix_type):
-    """Master function to derive the profiles of a loci's subgroups.
+    """
+    Summary:
+    Master function to derive the profiles of a loci's subgroups.
     
     locus = 'Heavy', 'Lambda' or 'Kappa'. Has to be run for each one (str).
     infile = file containing query seqeunces matched to their BLAST record 
