@@ -16,7 +16,7 @@ def extract_ref_data(in_file,organism, region, out_file):
     from Bio import SeqIO
     import sys 
     sys.stdout = open (out_file, 'a')
-    #possible ways IMGT data denotes functional gene
+    # Possible ways IMGT data denotes functional genee
     functional_gene = ['|F|', '|[F]|', '|(F)|']  
     region = region.upper() + '-REGION'     
     organism = organism.capitalize()        
@@ -38,9 +38,10 @@ def make_ref_blastdb(in_file,db_name):
     db_name = name of resultant database produced by this func (str)
     
     Desc:
-    Makes a nucleotide database, also parses SeqIDs.
+    Makes a nucleotide database, also parses SeqIDs. NO masking.
 
-    Will not work if duplicate sequences present in in_file.
+    Will not work if duplicate sequences present in in_file. Use SeqKit to 
+    clean if this happens.
     Runs a command line process via Python's subprocess module.   
     """
     import subprocess
@@ -67,9 +68,9 @@ def tBLASTn_full(queries,db_name,out_file):
     import subprocess 
     with open(out_file,'a') as out:
         cmd = ('tblastn -query ' + queries + ' -db ' + db_name 
-               + ' -soft_masking false -outfmt 5')
+               + ' -soft_masking false -seg no - sorthits 0 -outfmt 5')
         subprocess.Popen(cmd,stdout=out) 
-        #need to add a line that makes it wait till completion 
+        # Need to add a line that makes it wait till completion 
 
         
 def count_xml_blast_records(in_file):
@@ -89,7 +90,7 @@ def count_xml_blast_records(in_file):
     handle = open(in_file)    
     blast_records = NCBIXML.parse(handle)
     
-    #count records
+    # Count records
     for blast_record in blast_records:
         blast_record_count +=1
     print(blast_record_count)     
@@ -110,6 +111,7 @@ def blast_output_xml2csv(in_file,alignments, out_file):
     Desc:
     Records in XML file are ordered by E-value. Parsing the first record thus 
     gives the best hit by e-value. 
+    BLAST alignment description contains subgroup assignment. 
     """    
     from Bio.Blast import NCBIXML
     import sys
@@ -120,7 +122,7 @@ def blast_output_xml2csv(in_file,alignments, out_file):
     for record in blast_records:        
         if record.alignments:
             count = 0 
-            for description in record.alignments:
+            for description in record.alignments:   # Extract description
                 count +=1                
                 if count < alignments:
                     print(record.query, ',', description.title)    
@@ -145,7 +147,7 @@ def convert_queries2csv(in_file,out_file):
         writer = csv.writer(csv_output,lineterminator = '\n')
         for record in SeqIO.parse(in_file,'fasta'):
             seq = str(record.seq)
-            seq = seq[:21]  #first 21 residues only
+            seq = seq[:21]  # First 21 residues only
             print(seq)                    
                     
 def join_queries2blout(blout_file,queries_file,out_file):
@@ -174,12 +176,12 @@ def join_queries2blout(blout_file,queries_file,out_file):
     with open(out_file,'a+') as csv_output, open(blout_file,'r') as blout, \
     open(queries_file,'r') as queries:
         
-        #read input rows
+        # Read input rows
         writer = csv.writer(csv_output,lineterminator = '\n')
         blout_reader = csv.reader(blout)
         queries_reader = csv.reader(queries)
         
-        #write output row
+        # Write output row
         for blout_row, queries_row in zip(blout_reader,queries_reader):
             blout_row = ','.join(blout_row)
             queries_row = ''.join(queries_row)

@@ -1,17 +1,30 @@
 #%%
 def phrases(phrase,text):
-    """Replaces using 'in', which is non-specific.
+     """
+    Summary:
+    Replaces using 'in', which is non-specific.
     
+    Args:
+    phrase = text to find (str)
+    text = text to search in (str)
+    
+    Desc:    
     Returns true if EXACT match between strings is found, false oteherwise. 
     Case insensitive.
     Can differentiate between IGHV1 and IGHV10, which 'in' cannot.
-    """    
+    """
     import re
     return re.search(r"\b{}\b".format(phrase), text, re.IGNORECASE) is not None
 
 def fasta2pir(infile,outfile):
-    """Converts a FASTA formatted file to PIR format. Required format of 
+    """
+    Summary:
+    Converts a FASTA formatted file to PIR format. Required format of 
     hsubgroup.   
+    
+    Args:
+    infile = input file (.fasta)
+    outfile = output file (.pir)
     """
     from Bio import SeqIO
     import sys 
@@ -23,14 +36,18 @@ def fasta2pir(infile,outfile):
         print(record.seq + '*')        
 
 def run_hsubgroup(query_file,matrix_file,matrix_type,score_type,out_file):
-    """Takes PIR formatted query sequences and profiles and runs hsubgroup
-
+    """
+    Summary:
+    Takes PIR formatted query sequences and profiles and runs hsubgroup
+    
+    Args:
     query_file = PIR formatted queries (.pir)
     matrix_file = file containing subgroup profile (.txt)
     matrix_type = '2line' or 'full' (str)
     score_type = 'normal' or 'log' (str)
     out_file = named out file containing hsubgroup scores (.csv)
     
+    Desc:
     Creates a command string and runs using subproces.
     """
 
@@ -55,17 +72,20 @@ def run_hsubgroup(query_file,matrix_file,matrix_type,score_type,out_file):
  
         
 def attach_scores_to_queries(in_file,score_file,out_file):
-    """Matches fasta IDs to their score from hsubgroup
+    """
+    Summary:
+    Matches fasta IDs to their score from hsubgroup.
     
+    Args:
     infile = queries.fasta
     score_file = csv file containing scores from hsubgroup
     out_file = named filed containing seq IDs matched to scores (.csv)
-
+    
+    Desc:
     hsubgroup scores sequences in same order they are entered in. Thus, can 
     use a zip function to match query sequences to their scores. 
 
-    Output file format (known as seqs_scores file)
-
+    Output file format (known as seqs_scores file):
     Query_ID, Mus musculus Heavy Chain x, 85.2222, Mus musculus Heavy Chain y,
     67.3333.
     """
@@ -82,13 +102,17 @@ def attach_scores_to_queries(in_file,score_file,out_file):
             sys.stdout.write(joined)
         
 def make_final_results(in_file,blout_file,organism,out_file):
-    """Creates final results file for downstream analysis.
+    """
+    Summary:
+    Creates final results file for downstream analysis.
     
+    Args:    
     in_file = file containing fasta IDs matched to their hsubgroup results 
     blout_file = blout queries file
     organism = name of query organism (str)
     out_file = named out file containing full results (.csv)
     
+    Desc:    
     Uses a zip function to join the in_file and blout_file together.
     Organism is also attached to the end of the row for species comparison
     later on. 
@@ -97,9 +121,10 @@ def make_final_results(in_file,blout_file,organism,out_file):
 
     QueryID, Assign 1, Score 1, Assign 2, Score 2, QueryID, BLAST record,
     Residues, Organism.
-
+    
+    Notes:
     Redundancy in this file of both QueryID being present twice and residues 
-    being included.
+    being included. Not a big issue but could be amended in later release.
     """ 
     import csv 
     import sys 
@@ -121,14 +146,18 @@ def make_final_results(in_file,blout_file,organism,out_file):
                                  
 
 def check_assignment(in_file,blout_queries_file,organism,out_file):
-    """Determines the MCC of each subgroup and outputs to file.
+    """
+    Summary:
+    Determines the MCC of each subgroup and outputs to file.
     
+    Args:    
     in_file = full results file (.csv)
     blout_queries_file = blout_queries_file (.csv)
             Used to generate subgroup dictionary
     organism = current query organism (str)
     out_file = named file to contain results of MCC calculations (.txt)
     
+    Desc:    
     Function works by comparing hsubgroup's allocation (e.g. Mouse Heavy 1) to
     BLAST's allocation (e.g. IGHV1). Uses a dictionary to link subgroups e.g.
     {Mouse Heavy Chain 1: IGHV1, Mouse Heavy Chain 2: IGHV2}. Dictionary

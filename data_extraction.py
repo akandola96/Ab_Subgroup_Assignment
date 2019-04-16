@@ -153,7 +153,7 @@ def make_fasta(input_file,version,output_file_name):
                count +=1
                if row[0] == '*':        # If end of seq, exit loop
                    break
-               if count < 2: 
+               if count < 2:            # Evaluate 1st residue only
                    numbering = str(row[2])
                    numbering = int(numbering[1:]) # Converts str(H1) to int(1)
                    if numbering == 1:
@@ -165,7 +165,7 @@ def make_fasta(input_file,version,output_file_name):
                        if version == 'EA':                       
                            keep_marker = False
                            break
-                       # Allow insertion of up to 6X
+                       # Insert placeholder of up to 6X
                        elif version == 'T6':
                            if numbering < 8: # Allows up to a 6X insertion
                                missing_residues = numbering - 1
@@ -251,7 +251,7 @@ def remove_seqs_missing_residues(in_file,version,out_file):
                 print('>' + record.id)
                 print(record.seq)  
         elif version == 'T6':
-            if 'XXXXXXX' not in seq_21:
+            if 'XXXXXXX' not in seq_21: # 7 continuous unknowns
                 print('>' + record.id)
                 print(record.seq)
 
@@ -298,7 +298,7 @@ def convert_seqkit(infile,outfile):
     sys.stdout = open(outfile,'a')
     file = SeqIO.parse(infile,'fasta')
     for record in file:
-        print('>' + record.id)
+        print('>' + record.id)  # Print auto inserts '\n'
         print(str(record.seq))
                
 def count_num_queries(in_file):
