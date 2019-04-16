@@ -134,4 +134,6 @@ This dictionary is required to manage the difference in outputs of BLAST (which 
  
 ## Misclassified analysis 
 
+### Determines miclassified sequences (FP or FN, user defined) for a given subgroup. Creates FASTA files based on this for alignment in JalView via MUSCLE and creation of phylogenetic trees.
+
 **extract_misclassified_subgroup**: Function extracts all sequences of a certain subgroup that have been misclassified. Us
