@@ -62,13 +62,14 @@ def tBLASTn_full(queries,db_name,out_file):
     
     Desc:
     soft_masking false --> masking off  
+    seg no --> masking off
 
     Runs a full tBLASTn search, all hits are included. Parsed later. 
     """    
     import subprocess 
     with open(out_file,'a') as out:
         cmd = ('tblastn -query ' + queries + ' -db ' + db_name 
-               + ' -soft_masking false -seg no - sorthits 0 -outfmt 5')
+               + ' -soft_masking false -seg no -outfmt 5')
         subprocess.Popen(cmd,stdout=out) 
         # Need to add a line that makes it wait till completion 
 

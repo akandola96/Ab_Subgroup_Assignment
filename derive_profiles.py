@@ -159,13 +159,17 @@ def get_profiles(locus, infile, out_file,query_organism,freq_type,matrix_type):
                              + subg_num +',' + '\n')
             sys.stdout.write('"' + organism + ' ' + chain_type + ' ' 
                              + 'Chain' + ' ' + subg_num + '"' + ',')
+            
             # Get profiles
             if matrix_type == '2line':
                 derive_profiles_2line(infile,subgroup,freq_type,out_file)
             elif matrix_type == 'full':
                 derive_profiles_full(infile,subgroup,freq_type,out_file)
+            
             # Write terminator
             sys.stdout.write('//' + '\n')
+            
+        #Error catcher
         except Exception as e:
             print('ERROR OCCURRED')
             print(e)            
@@ -246,7 +250,7 @@ def derive_profiles_2line(in_file, query_subgroup,freq_type,out_file):
             subgroup = str(row[1])         # Row contains BLAST record
             
             # If the query subgroup is found in the blast record
-            if phrases(query_subgroup,subgroup) == True: #or intra_subgroups in subgroup:
+            if phrases(query_subgroup,subgroup) == True or intra_subgroups in subgroup:
                 x = 0                 
             # Add 1st residue to pos1 list, 2nd residue to pos2 list...
                 for i in list_names:
