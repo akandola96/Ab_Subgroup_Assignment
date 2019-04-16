@@ -144,7 +144,7 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
     with open(in_file) as csv_in:
         reader = csv.reader(csv_in)
         
-        print('Subgroup,','MCC,','TPR,','TNR,','PPV,' , 'TN,','FN,','FP,',
+        print('Subgroup,','MCC,','TPR,','TNR,','PPV,' , 'TP,','FN,','FP,',
         'TN')
             
         av_MCC_num = 0

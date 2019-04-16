@@ -166,7 +166,10 @@ def derive_profiles_2line(in_file, query_subgroup,freq_type,out_file):
     Builds a profile based on this. 
     
     Lambda function removes the most common residue from each position list 
-    and the second most common residue for each position is then calculated.    
+    and the second most common residue for each position is then calculated.
+
+    intra_subgroups variable handles IGHV1S1 etc. Treats IGHV1S1 the same as
+    IGHV1. Profiles are impacted accordingly.    
     
     Frequency of each residue is recorded to 3 d.p.
     """             

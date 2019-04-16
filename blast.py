@@ -57,6 +57,7 @@ def tBLASTn_full(queries,db_name,out_file):
                + ' -soft_masking false -outfmt 5')
         subprocess.Popen(cmd,stdout=out) 
         #need to add a line that makes it wait till completion 
+
         
 def count_xml_blast_records(in_file):
     """Counts the number of BLAST records in a BLAST output file"""
