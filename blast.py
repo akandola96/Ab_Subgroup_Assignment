@@ -96,8 +96,9 @@ def count_xml_blast_records(in_file):
         blast_record_count +=1
     print(blast_record_count)     
     
- 
-def blast_output_xml2csv(in_file,alignments, out_file):
+
+#%%
+def blast_output_xml2csv(in_file,hits,out_file):
     """
     Summary:
     Extracts top hit from XML formatted BLAST output. Converts to
@@ -113,20 +114,29 @@ def blast_output_xml2csv(in_file,alignments, out_file):
     Records in XML file are ordered by E-value. Parsing the first record thus 
     gives the best hit by e-value. 
     BLAST alignment description contains subgroup assignment. 
-    """    
-    from Bio.Blast import NCBIXML
+    """   
+    
+    from Bio import SearchIO
     import sys
-    handle = open(in_file)
-    sys.stdout = open(out_file,'a+') 
-    blast_records = NCBIXML.parse(handle)
-    alignments+=1
-    for record in blast_records:        
-        if record.alignments:
-            count = 0 
-            for description in record.alignments:   # Extract description
-                count +=1                
-                if count < alignments:
-                    print(record.query, ',', description.title)    
+    sys.stdout=open(out_file,'a+')
+    
+    # q_result is list obj. Top hit stored q_result[0]
+    hits -= 1
+    blast_qresults = SearchIO.parse(in_file,'blast-xml')
+    for blast_qresult in blast_qresults:  
+        # Get query ID
+        query_id = blast_qresult.id
+        
+        # Get defined hit + ID and description
+        top_hit = blast_qresult[hits]
+        top_hit_id = top_hit.id
+        top_hit_desc = top_hit.description      
+        
+        # Write
+        print(query_id,',', top_hit_id, top_hit_desc)
+    
+                    
+#%%                    
                     
 def convert_queries2csv(in_file,out_file):
     """
