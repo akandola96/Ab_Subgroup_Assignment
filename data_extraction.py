@@ -155,7 +155,10 @@ def make_fasta(input_file,version,output_file_name):
                    break
                if count < 2:            # Evaluate 1st residue only
                    numbering = str(row[2])
-                   numbering = int(numbering[1:]) # Converts str(H1) to int(1)
+                   if '6A' in numbering:   # If first residue is an insertion
+                       numbering = 7
+                   elif '6A' not in numbering:
+                       numbering = int(numbering[1:]) # Converts str(H1) to int(1)
                    if numbering == 1:
                        keep_marker = True 
                        sys.stdout.write(row[0])
