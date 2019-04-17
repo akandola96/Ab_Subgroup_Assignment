@@ -1,6 +1,6 @@
 #%%
 def phrases(phrase,text):
-     """
+    """
     Summary:
     Replaces using 'in', which is non-specific.
     
@@ -33,7 +33,7 @@ def fasta2pir(infile,outfile):
     for record in file:
         print('>P1;'+ record.id) 
         print(record.id)
-        print(record.seq + '*')        
+        print(record.seq + '*')   
 
 def run_hsubgroup(query_file,matrix_file,matrix_type,score_type,out_file):
     """
@@ -54,12 +54,12 @@ def run_hsubgroup(query_file,matrix_file,matrix_type,score_type,out_file):
     #having some trouble running. Need use cygwin to do so on windows
     import subprocess
     
-    #Profile version
+    # Profile version
     if matrix_type == 'full':
         matrix_type == '-f'
     elif matrix_type =='2line':
         matrix_type == ''
-    #Freq_type version
+    # Freq_type version
     if score_type == 'product':
         score_type == ' -p'
     elif score_type == 'sum':
@@ -133,11 +133,11 @@ def make_final_results(in_file,blout_file,organism,out_file):
     with open(out_file,'a+') as full_results, open(blout_file,'r') as blout, \
     open(in_file,'r') as seqs_scores:
         
-        #read input rows 
+        # Read input rows 
         seqs_scores_reader = csv.reader(seqs_scores)
         blout_reader = csv.reader(blout)
         
-        #write output rows     
+        # Write output rows     
         writer = csv.writer(full_results,lineterminator='\n')
         for seqs_scores_row,blout_row in zip(seqs_scores_reader,blout_reader):
             seqs_scores_row = ','.join(seqs_scores_row)
@@ -180,10 +180,10 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
         av_MCC_count = 0
         MCC_list = []
     
-        #determine subgroup names to evaluate
+        # Determine subgroup names to evaluate
         my_dict = determine_subgroups(blout_queries_file,organism)
 
-        #Iterate through subgroups using dictionary      
+        # Iterate through subgroups using dictionary      
         for x in my_dict: 
             csv_in.seek(0) #remove
             TP = 0 
@@ -193,7 +193,7 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
             misc = 0
             training = 0 
 
-            alt_x = my_dict[x] + 'S'   #IGHV1S. Deals with intrasubgroup subgs
+            alt_x = my_dict[x] + 'S'   # IGHV1S. Deals with intrasubgroup subgs
             
             for row in reader:            
                 prediction = str(row[1])  
@@ -202,7 +202,7 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
                 
                 if organism != 'Oryctolagus cuniculus':
                                 
-                    #Assign entry to confusion matrix variable
+                    # Assign entry to confusion matrix variable
                     if phrases(x, prediction) == True and \
                     phrases(my_dict[x],actual) == True:
                         TP +=1 
@@ -247,8 +247,8 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
                     
                     else:
                         misc +=1   
-            #Assess performance
-            #Try/except used to catch division by 0 (can sometimes occur)
+            # Assess performance
+            # Try/except used to catch division by 0 (can sometimes occur)
             try:
                 MCC = float((TP * TN) - (FP * FN))/ float(((TP+FP)*(TP+FN)*(TN+FP)*
                            (TN+FN)) ** 0.5)
@@ -259,7 +259,7 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
                 TNR = round((TN/(TN+FP)),5)
                 PPV = round((TP/(TP+FP)),5)
                                 
-                #Average calc variables
+                # Average calc variables
                 av_MCC_num += MCC
                 av_MCC_count +=1
                 MCC_list.append(MCC)
@@ -273,5 +273,5 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
         average_MCC = str(average_MCC)
         print('Simple MCC Average:',',',average_MCC) 
 
-        #Makes MCC values available for other functions
+        # Makes MCC values available for other functions
         return MCC_list

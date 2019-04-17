@@ -97,7 +97,7 @@ def count_xml_blast_records(in_file):
     print(blast_record_count)     
     
 
-#%%
+
 def blast_output_xml2csv(in_file,hits,out_file):
     """
     Summary:
@@ -134,10 +134,7 @@ def blast_output_xml2csv(in_file,hits,out_file):
         
         # Write
         print(query_id,',', top_hit_id, top_hit_desc)
-    
-                    
-#%%                    
-                    
+
 def convert_queries2csv(in_file,out_file):
     """
     Summary:
