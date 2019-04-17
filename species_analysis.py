@@ -1,6 +1,9 @@
 def check_species_assignment(in_file,out_file):
-    """Works out MCC on a species basis rather than subgroup
+    """
+    Summary:
+    Works out MCC for a species.
     
+    Args:    
     in_file = combined full results file 
         Produced by a species' sequences against a hsubgroup datafile 
         containing all subgroup profiles for all species. Each full results file
@@ -8,6 +11,9 @@ def check_species_assignment(in_file,out_file):
         of this file contains the actual organism. This is compared to 
         hsubgroup's assignment to derive an MCC
     out_file = named output file (.csv)
+    
+    Desc:
+    /
     
     """
     import csv
@@ -50,8 +56,8 @@ def check_species_assignment(in_file,out_file):
                    continue
                
                try:
-                   org_MCC = int((TP * TN) - (FP * FN))/ \
-                   int(((TP+FP)*(TP+FN)*(TN+FP)*(TN+FN)) ** 0.5)
+                   org_MCC = float((TP * TN) - (FP * FN))/ \
+                   float(((TP+FP)*(TP+FN)*(TN+FP)*(TN+FN)) ** 0.5)
                except:
                    continue
                    

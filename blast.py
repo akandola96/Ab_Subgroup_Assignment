@@ -16,7 +16,7 @@ def extract_ref_data(in_file,organism, region, out_file):
     from Bio import SeqIO
     import sys 
     sys.stdout = open (out_file, 'a')
-    # Possible ways IMGT data denotes functional genee
+    # Possible ways IMGT data denotes functional gene
     functional_gene = ['|F|', '|[F]|', '|(F)|']  
     region = region.upper() + '-REGION'     
     organism = organism.capitalize()        
