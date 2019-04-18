@@ -173,7 +173,8 @@ def get_profiles(locus, infile, out_file,query_organism,freq_type,matrix_type):
         except Exception as e:
             print('ERROR OCCURRED')
             print(e)            
-#%%
+
+#%%            
 def derive_profiles_2line(in_file, query_subgroup,freq_type,out_file):      
     """
     Summary:
@@ -205,8 +206,6 @@ def derive_profiles_2line(in_file, query_subgroup,freq_type,out_file):
     IGHV1. Profiles are impacted accordingly.    
     
     Frequency of each residue is recorded to 3 d.p.
-    
-    Will be tidied in later release.
     """             
     import csv 
     import sys
@@ -215,32 +214,12 @@ def derive_profiles_2line(in_file, query_subgroup,freq_type,out_file):
     with open(in_file,'r') as cinput:
         reader = csv.reader(cinput)
         
-        #Initialise position lists
-        pos1 = []
-        pos2 = []
-        pos3 = []
-        pos4 = []
-        pos5 = []
-        pos6 = []
-        pos7 = []
-        pos8 = []
-        pos9 = []
-        pos10 = []
-        pos11 = []
-        pos12 = []
-        pos13 = []
-        pos14 = []
-        pos15 = []
-        pos16 = []
-        pos17 = []
-        pos18 = []
-        pos19 = []
-        pos20 = []
-        pos21 = []
+        # Initialise position lists
         
-        list_names = [pos1,pos2,pos3,pos4, pos5, pos6, pos7, pos8, pos9, pos10,                     
-                      pos11, pos12, pos13, pos14, pos15, pos16, pos17, pos18, 
-                      pos19, pos20, pos21] 
+        N = 21
+    
+        list_names = [[] for i in range(N)]
+        
         tops = []       
         tops2 = []
         freqs = []      
@@ -311,8 +290,8 @@ def derive_profiles_2line(in_file, query_subgroup,freq_type,out_file):
         sys.stdout.write('\n' + "".join(tops) + ',' +'\n') 
         sys.stdout.write(",".join(str(x) for x in formatted_freqs) + ',' +'\n')                 
         sys.stdout.write("".join(tops2) + ',' +'\n') 
-        sys.stdout.write(",".join(str(x) for x in formatted_freqs2) +'\n') 
-#%%
+        sys.stdout.write(",".join(str(x) for x in formatted_freqs2) +'\n')         
+        
 def derive_profiles_full(in_file, query_subgroup,freq_type,out_file): 
     """Generates a full profile for a subgroup.
     
@@ -336,33 +315,14 @@ def derive_profiles_full(in_file, query_subgroup,freq_type,out_file):
     sys.stdout = open(out_file, 'a+')
     with open(in_file,'r') as cinput:
         reader = csv.reader(cinput)
-        pos1 = []
-        pos2 = []
-        pos3 = []
-        pos4 = []
-        pos5 = []
-        pos6 = []
-        pos7 = []
-        pos8 = []
-        pos9 = []
-        pos10 = []
-        pos11 = []
-        pos12 = []
-        pos13 = []
-        pos14 = []
-        pos15 = []
-        pos16 = []
-        pos17 = []
-        pos18 = []
-        pos19 = []
-        pos20 = []
-        pos21 = []
-        list_names = [pos1,pos2,pos3,pos4, pos5, pos6, pos7, pos8, pos9, pos10, 
-                      pos11, pos12, pos13, pos14, pos15, pos16, pos17, pos18, 
-                      pos19, pos20, pos21]
+        
+    # Creates  lists
+        N = 21
+        list_names = [[] for i in range(N)]
+        
         intra_subgroups = query_subgroup + 'S'
         
-    # Establish lists  
+    # Fill lists  
         for row in reader:
             subgroup = str(row[1])
             
@@ -372,7 +332,7 @@ def derive_profiles_full(in_file, query_subgroup,freq_type,out_file):
             #if query_subgroup in subgroup:  #nonspecific variant. oryctolagus
                 x = 0
                 
-                # Res1 to pos1, res2 to pos2, res3 to pos3...
+                # Res1 to list 1, res2 to list 2 ... res21 to list 21
                 for position_list in list_names:
                     residues = list(row[2])               # Gets seq
                     position_list.append(residues[x])     
@@ -397,7 +357,8 @@ def derive_profiles_full(in_file, query_subgroup,freq_type,out_file):
                 freq= '%.3f' % freq                                 
                 value_store.append(freq)            # Append pos list          
             total_store.append(value_store)         # Overall profile
-                
+        
+        sys.stdout.write('\n')                        
         amino_counter = -1                          
         for amino in aminos:
             amino_counter +=1                       #look at list position 0 
