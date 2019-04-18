@@ -35,7 +35,7 @@ def fasta2pir(infile,outfile):
         print(record.id)
         print(record.seq + '*')   
 
-def run_hsubgroup(query_file,matrix_file,matrix_type,score_type,out_file):
+def run_hsubgroup(query_file,matrix_file,matrix_type,out_file):
     """
     Summary:
     Takes PIR formatted query sequences and profiles and runs hsubgroup
@@ -59,13 +59,9 @@ def run_hsubgroup(query_file,matrix_file,matrix_type,score_type,out_file):
         matrix_type == '-f'
     elif matrix_type =='2line':
         matrix_type == ''
-    # Freq_type version
-    if score_type == 'product':
-        score_type == ' -p'
-    elif score_type == 'sum':
-        score_type = ''
-    cmd = ('hsubgroup -d ' + matrix_file + ' -v ' + matrix_type + score_type 
-            +' ' + query_file + ' >> ' + out_file)
+    
+    cmd = ('hsubgroup -d ' + matrix_file + ' -v ' + matrix_type +' ' 
+           + query_file + ' > ' + out_file)
        
     hsubgroup_run = subprocess.Popen(cmd,shell=True) 
     hsubgroup_run.wait()
