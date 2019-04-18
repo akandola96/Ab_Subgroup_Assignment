@@ -187,7 +187,7 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
             FN = 0 
             TN = 0 
             misc = 0
-            training = 0 
+            
 
             alt_x = my_dict[x] + 'S'   # IGHV1S. Deals with intrasubgroup subgs
             

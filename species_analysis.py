@@ -25,6 +25,8 @@ def check_species_assignment(in_file,out_file):
         organisms = ['Homo sapiens','Mus musculus','Oryctolagus cuniculus',
                         'Macaca mulatta','Gallus']
         
+        #need to update with trout
+        
         for organism in organisms:
             csv_in.seek(0)
             TP = 0 

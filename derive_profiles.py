@@ -105,7 +105,7 @@ def get_numerics(locus,organism, in_file):
             csv_in.seek(0)                  # Move to top of BLAST file
             
             if organism != 'Oryctolagus cuniculus' and \
-            organism!= 'Oncorhynchus mykss':            
+            organism!= 'Oncorhynchus mykiss':            
                 for row in reader:
                     blast = str(row[1])
                     if phrases(query,blast) == False:   # If cant find query 
@@ -185,7 +185,7 @@ def get_profiles(locus, infile, out_file,query_organism,freq_type,matrix_type):
             print('ERROR OCCURRED')
             print(e)            
 
-#%%            
+          
 def derive_profiles_2line(in_file, query_subgroup,freq_type,out_file):      
     """
     Summary:
