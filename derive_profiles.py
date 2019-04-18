@@ -104,7 +104,8 @@ def get_numerics(locus,organism, in_file):
             query = root + str(x)           #e.g. IGHV1, IGHV2...
             csv_in.seek(0)                  # Move to top of BLAST file
             
-            if organism != 'Oryctolagus cuniculus':            
+            if organism != 'Oryctolagus cuniculus' and \
+            organism!= 'Oncorhynchus mykss':            
                 for row in reader:
                     blast = str(row[1])
                     if phrases(query,blast) == False:   # If cant find query 
@@ -114,15 +115,25 @@ def get_numerics(locus,organism, in_file):
                         break
             
             # Handles inconsistent labelling in o.cuniculus
-            elif organism == 'Oryctolagus cuniculus':   
+            elif organism == 'Oryctolagus cuniculus':
+                sub_query = query+ 'S'
                 for row in reader:
                     blast = str(row[1])
-                    if query not in blast:
+                    if sub_query not in blast:
                         continue
-                    elif query in blast:
+                    elif sub_query in blast:
+                        numeric_list.append(query)
+                        break     
+            elif organism == 'Oncorhynchus mykiss':
+                sub_query = query+ 'S'
+                for row in reader:
+                    blast = str(row[1])
+                    if sub_query not in blast:
+                        continue
+                    elif sub_query in blast:
                         numeric_list.append(query)
                         break
-                
+                        
         return numeric_list
              
 def get_profiles(locus, infile, out_file,query_organism,freq_type,matrix_type):
@@ -358,7 +369,7 @@ def derive_profiles_full(in_file, query_subgroup,freq_type,out_file):
                 value_store.append(freq)            # Append pos list          
             total_store.append(value_store)         # Overall profile
         
-        sys.stdout.write('\n')                        
+        sys.stdout.write('\n')        
         amino_counter = -1                          
         for amino in aminos:
             amino_counter +=1                       #look at list position 0 
