@@ -340,7 +340,7 @@ def derive_profiles_full(in_file, query_subgroup,freq_type,out_file):
             # If subgroup is present in blast record
             if phrases(query_subgroup,subgroup) == True \
             or intra_subgroups in subgroup:
-            #if query_subgroup in subgroup:  #nonspecific variant. oryctolagus
+            
                 x = 0
                 
                 # Res1 to list 1, res2 to list 2 ... res21 to list 21
