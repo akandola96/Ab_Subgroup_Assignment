@@ -1,5 +1,5 @@
-def extract_misclassified_subgroup(in_file, fasta_file, subgroup, sentence,
-                                out_file,misclassified_type,pull_assignment):
+#%%
+def extract_misclassified_subgroup(in_file, fasta_file, subgroup, sentence,out_file,misclassified_type,pull_assignment):
                     
     """
     Summary:
@@ -107,7 +107,7 @@ def extract_first_21_residues(input_file, output_file):
 def extract_random_TPs(in_file,subgroup,sentence, number,fasta_file,
                         out_file,pull_sequences):
 
-"""
+    """
     Summary:
     Extracts random TP sequences for a given subgroup. Used for phylo trees.
     

@@ -1,3 +1,4 @@
+#%%
 def difference_in_scores2(in_file,blout_queries_file,organism):
     import csv
     import statistics

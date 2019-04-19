@@ -1,6 +1,6 @@
 
 #%%
-def data_extraction(xml_in,query_organism,version,os,output_name):
+def data_extractor(xml_in,query_organism,version,os,output_name):
     
     xml_parser(xml_in,query_organism,'abysis.csv')
     
@@ -286,7 +286,21 @@ def remove_seqs_missing_residues(in_file,version,out_file):
             if 'XXXXXXX' not in seq_21: # 7 continuous unknowns
                 print('>' + record.id)
                 print(record.seq)
+#%%                
+def quick_count(infile):
+    from Bio import SeqIO
+    count = 0 
+    for record in SeqIO.parse(infile,'fasta'):
+        seq = str(record.seq)
+        seq_21 = seq[:21]
+        
+        if seq_21.count('X') >6:
+            count+=1
+    print(count)
+            
+    
 
+#%%
 def seqkit_clean(in_file,os,out_file):  
     """
     Summary:

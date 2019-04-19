@@ -222,7 +222,8 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
                     #Should always be 0
                     else:
                         misc +=1
-                        
+                 
+                #shoudl be able to get rid of now    
                 elif organism == 'Oryctolagus cuniculus':
                 
                     if phrases(x, prediction) == True and \
