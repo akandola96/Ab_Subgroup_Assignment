@@ -23,7 +23,7 @@ def check_species_assignment(in_file,out_file):
         reader = csv.reader(csv_in)
         
         organisms = ['Homo sapiens','Mus musculus','Oryctolagus cuniculus',
-                        'Macaca mulatta','Gallus']
+                        'Macaca mulatta','Oncorhynchus mykiss']
         
         #need to update with trout
         
