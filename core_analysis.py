@@ -199,26 +199,50 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
                 if organism != 'Oryctolagus cuniculus':
                                 
                     # Assign entry to confusion matrix variable
+                    
+                    # If IGHV1 is prediction and IGHV1 is actual TP + 1
                     if phrases(x, prediction) == True and \
                     phrases(my_dict[x],actual) == True:
                         TP +=1 
-        
-                    #IGHV1S1 is counted as an IGHV1 TP
-                    if phrases(x, prediction) == True and \
+                        
+                    # If IGHV1 is prediction and IGHV1S1 is actual TP + 1
+                    elif phrases(x, prediction) == True and \
                     alt_x in actual:
                         TP +=1 
+                     
                         
+                     # If IGHV1 not prediction and is actual FN + 1   
                     elif phrases(x, prediction) == False and \
                     phrases(my_dict[x],actual) == True:
                         FN +=1
                         
+                    # If IGHV1 not prediction and IGHV1S1 is actual FN + 1
+                    elif phrases(x, prediction) == False and \
+                    alt_x in actual:
+                        FN +=1
+                    
+            
+                    # if IGHV1 is prediction and IGHV1 is not actual FP + 1
                     elif phrases(x,prediction) == True and \
                     phrases(my_dict[x],actual) == False:
                         FP +=1
                         
+                    # If IGHV1 is prediction and IGHV1S1 is not actual FP + 1    
+                    elif phrases(x,prediction) == True and \
+                    alt_x not in actual:
+                        FP +=1
+                        
+                        
+                    # If IGHV1 is not prediction and IGHV1 is not actual TN + 1
                     elif phrases(x,prediction) == False and \
                     phrases(my_dict[x],actual) == False:
-                        TN +=1        
+                        TN +=1     
+                    # If IGHV1 is not prediction and IGHV1S1 is not actual TN+1
+                    elif phrases(x,prediction) == False and \
+                    alt_x not in actual:
+                        TN +=1     
+                        
+                        
                     #Should always be 0
                     else:
                         misc +=1
@@ -272,3 +296,115 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
 
         # Makes MCC values available for other functions
         return MCC_list
+#%%    
+def check_assignment2(in_file,blout_queries_file,organism,out_file):
+    """
+    Summary:
+    Determines the MCC of each subgroup and outputs to file.
+    
+    Args:    
+    in_file = full results file (.csv)
+    blout_queries_file = blout_queries_file (.csv)
+            Used to generate subgroup dictionary
+    organism = current query organism (str)
+    out_file = named file to contain results of MCC calculations (.txt)
+    
+    Desc:    
+    Function works by comparing hsubgroup's allocation (e.g. Mouse Heavy 1) to
+    BLAST's allocation (e.g. IGHV1). Uses a dictionary to link subgroups e.g.
+    {Mouse Heavy Chain 1: IGHV1, Mouse Heavy Chain 2: IGHV2}. Dictionary
+    derived from derive_profiles.py functions. 
+    
+    For each row in the full results file, determines whether it is TP, TN, FP
+    or FN. Then uses MCC formula to determine the MCC. Repeats for all 
+    subgroups.
+    """   
+    import csv
+    import sys
+    sys.stdout = open(out_file,'a+')
+    with open(in_file) as csv_in:
+        reader = csv.reader(csv_in)
+        
+        print('Subgroup,','MCC,','TPR,','TNR,','PPV,' , 'TP,','FN,','FP,',
+        'TN')
+            
+        av_MCC_num = 0
+        av_MCC_count = 0
+        MCC_list = []
+    
+        # Determine subgroup names to evaluate
+        my_dict = determine_subgroups(blout_queries_file,organism)
+
+        # Iterate through subgroups using dictionary      
+        for x in my_dict: 
+            csv_in.seek(0) #remove
+            TP = 0 
+            FP = 0 
+            FN = 0 
+            TN = 0 
+            misc = 0
+            
+
+            alt_x = my_dict[x] + 'S'   # IGHV1S. Deals with intrasubgroup subgs
+            
+            for row in reader:            
+                prediction = str(row[1])  
+                actual = str(row[6])
+                
+                
+                
+                                
+                # Assign entry to confusion matrix variable
+                if phrases(x, prediction) == True and \
+                phrases(my_dict[x],actual) == True:
+                    TP +=1 
+    
+                #IGHV1S1 is counted as an IGHV1 TP
+                if phrases(x, prediction) == True and \
+                alt_x in actual:
+                    TP +=1 
+                    
+                elif phrases(x, prediction) == False and \
+                phrases(my_dict[x],actual) == True:
+                    FN +=1
+                    
+                elif phrases(x,prediction) == True and \
+                phrases(my_dict[x],actual) == False:
+                    FP +=1
+                    
+                elif phrases(x,prediction) == False and \
+                phrases(my_dict[x],actual) == False:
+                    TN +=1        
+                #Should always be 0
+                else:
+                    misc +=1
+                 
+    
+            # Assess performance
+            # Try/except used to catch division by 0 (can sometimes occur)
+            try:
+                MCC = float((TP * TN) - (FP * FN))/ float(((TP+FP)*(TP+FN)*(TN+FP)*
+                           (TN+FN)) ** 0.5)
+                MCC = round(MCC,5)
+                
+                #Other performance measures                         
+                TPR = round((TP/(TP+FN)),5)
+                TNR = round((TN/(TN+FP)),5)
+                PPV = round((TP/(TP+FP)),5)
+                                
+                # Average calc variables
+                av_MCC_num += MCC
+                av_MCC_count +=1
+                MCC_list.append(MCC)
+                print(x, ',' ,MCC, ',', TPR, ',',TNR, ',',PPV,',',TP,',',FN,','
+                ,FP,',',TN)
+            except Exception as e:
+                MCC = 'N/A'
+                print(x, MCC, 'Error:', e)
+                           
+        average_MCC = av_MCC_num/av_MCC_count 
+        average_MCC = str(average_MCC)
+        print('Simple MCC Average:',',',average_MCC) 
+
+        # Makes MCC values available for other functions
+        return MCC_list    
