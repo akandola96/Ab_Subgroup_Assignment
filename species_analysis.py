@@ -1,3 +1,4 @@
+#%%
 def check_species_assignment(in_file,out_file):
     """
     Summary:
@@ -25,7 +26,7 @@ def check_species_assignment(in_file,out_file):
         organisms = ['Homo sapiens','Mus musculus','Oryctolagus cuniculus',
                         'Macaca mulatta','Oncorhynchus mykiss']
         
-        #need to update with trout
+        
         
         for organism in organisms:
             csv_in.seek(0)
@@ -67,11 +68,14 @@ def check_species_assignment(in_file,out_file):
             print('TP:',TP,'FP:',FP,'FN:', FN ,'TN:', TN )
             print(TP+FP+FN+TN,'\n')
 
+
+
+
 def determine_species_misassignment_master(in_file):
     """Works out which species were assigned as which"""
 
     query_organisms =['Homo sapiens', 'Mus musculus','Macaca mulatta',
-                        'Oryctolagus cuniculus','Gallus']
+                        'Oryctolagus cuniculus','Oncorhynchus mykiss']
     for organism in query_organisms:
         determine_species_misassignment_FNs(in_file,organism)
 
@@ -88,7 +92,7 @@ def determine_species_misassignment_FNs(in_file, organism):
         mouse = 0 
         oryctolagus = 0 
         homo = 0
-        gallus = 0  
+        mykiss = 0  
         for row in reader:
             assigned_org = str(row[1])
             actual_org = str(row[8]) 
@@ -102,11 +106,11 @@ def determine_species_misassignment_FNs(in_file, organism):
                     oryctolagus+=1
                 elif 'Homo sapiens' in assigned_org:
                     homo+=1
-                elif 'Gallus' in assigned_org:
-                    gallus+=1
+                elif 'Oncorhynchus mykiss' in assigned_org:
+                    mykiss+=1
                     
     print('Query organism:', organism)
     print('Macaca:',macaca,'Mouse:', mouse,'Oryctolagus:', oryctolagus, 
-            'Homo:',homo,'Gallus: ',gallus)
-    print('Sum:',macaca+mouse+oryctolagus+homo+gallus)
+            'Homo:',homo,'Mykiss: ',mykiss)
+    print('Sum:',macaca+mouse+oryctolagus+homo+mykiss)
     print('\n')
