@@ -2,7 +2,7 @@
 def phrases(phrase,text):
     """
     Summary:
-    Replaces using 'in', which is non-specific.
+    Alternative to using 'in', which is non-specific.
     
     Args:
     phrase = text to find (str)
@@ -87,6 +87,12 @@ def get_numerics(locus,organism, in_file):
     possible subgroup (up to 30) and determines whether this string is present 
     in the BLAST record. If string is present then this subgroup is added to a 
     list (numeric_list).
+    
+    O.mykiss and O.cuniculus records are all labelled as intrasubgroup 
+    subgroups. There are no simple 'IGHV1' subgroups present. This function 
+    handles this by adding an 'S' character to the query e.g. IGHV1 -> IGHV1S1.
+    If IGHV1S1 is found in an O.cuniculus or O.mykiss record, it is counted as
+    IGHV1. Code is duplicated but will be fixed in later release.
     """
     import csv
     with open(in_file) as csv_in:
@@ -100,8 +106,8 @@ def get_numerics(locus,organism, in_file):
             root = 'IGLV'
         numeric_list = []
         
-        for x in range(1,31):               #each chain can have up to 30 subgs
-            query = root + str(x)           #e.g. IGHV1, IGHV2...
+        for x in range(1,31):               # Each chain can have up to 30 subgs
+            query = root + str(x)           # e.g. IGHV1, IGHV2...
             csv_in.seek(0)                  # Move to top of BLAST file
             
             if organism != 'Oryctolagus cuniculus' and \
@@ -114,7 +120,9 @@ def get_numerics(locus,organism, in_file):
                         numeric_list.append(query)      # Update list
                         break
             
-            # Handles inconsistent labelling in o.cuniculus
+            # Handles inconsistent labelling
+            # If it finds IGHV1S1, this is counted as IGHV1, which is added to
+            # the numeric list.
             elif organism == 'Oryctolagus cuniculus':
                 sub_query = query+ 'S'
                 for row in reader:
@@ -153,6 +161,8 @@ def get_profiles(locus, infile, out_file,query_organism,freq_type,matrix_type):
     Desc:
     Uses the get_numerics function to determine how many subgroups should be
     evaluated. 
+    Then uses either derive_profiles_2line or derive_profiles_full to determine
+    a subgroup's profile.
     Adds formatting and subgroup titles.
     """    
     import sys 
@@ -213,8 +223,8 @@ def derive_profiles_2line(in_file, query_subgroup,freq_type,out_file):
     Lambda function removes the most common residue from each position list 
     and the second most common residue for each position is then calculated.
 
-    intra_subgroups variable handles IGHV1S1 etc. Treats IGHV1S1 the same as
-    IGHV1. Profiles are impacted accordingly.    
+    The intra_subgroups variable handles IGHV1S1 etc. Treats IGHV1S1 the same 
+    a IGHV1.   
     
     Frequency of each residue is recorded to 3 d.p.
     """             
@@ -239,7 +249,7 @@ def derive_profiles_2line(in_file, query_subgroup,freq_type,out_file):
         
         # Fill position lists        
         for row in reader:
-            subgroup = str(row[1])         # Row contains BLAST record
+            subgroup = str(row[1])         # Contains BLAST record e.g. IGHV1
             
             # If the query subgroup (or intra) is found in the blast record
             if phrases(query_subgroup,subgroup) == True \
@@ -249,13 +259,13 @@ def derive_profiles_2line(in_file, query_subgroup,freq_type,out_file):
             # Add 1st residue to pos1 list, 2nd residue to pos2 list...
                 for i in list_names:
                     residues = list(row[2])         
-                    i.append(residues[x])       #res 1 into list 1 etc.        
-                    x+=1   
+                    i.append(residues[x])       # Residue 1 into list 1 etc.        
+                    x+=1                        # Update for next residue
                                
      # Determine profiles                   
         for i in list_names:
             i = [x for x in i if x != 'X']  # Remove X's from list
-            list_length = len(i)            # Determine number of known resids
+            list_length = len(i)            # Determine number of residues
             
                         
             # Calculate most common residue + frequency
@@ -291,12 +301,12 @@ def derive_profiles_2line(in_file, query_subgroup,freq_type,out_file):
             # Append to consensus profile (primary)
             tops.append(mode)                   
             freqs.append(freq_mode) 
-            formatted_freqs = ['%.3f' % x for x in freqs] #rounding 
+            formatted_freqs = ['%.3f' % x for x in freqs] # Rounding 
             
             # Append to consensus profile (secondary)
             tops2.append(mode2)
             freqs2.append(freq_mode2) 
-            formatted_freqs2 = ['%.3f' % x for x in freqs2] #rounding
+            formatted_freqs2 = ['%.3f' % x for x in freqs2] # Rounding
         
         # After iterating through all position lists, write and format
         sys.stdout.write('\n' + "".join(tops) + ',' +'\n') 
@@ -334,14 +344,13 @@ def derive_profiles_full(in_file, query_subgroup,freq_type,out_file):
         
         intra_subgroups = query_subgroup + 'S'
         
-    # Fill lists  
+    # Populate lists  
         for row in reader:
             subgroup = str(row[1])
             
             # If subgroup is present in blast record
             if phrases(query_subgroup,subgroup) == True \
             or intra_subgroups in subgroup:
-            
                 x = 0
                 
                 # Res1 to list 1, res2 to list 2 ... res21 to list 21
@@ -360,7 +369,7 @@ def derive_profiles_full(in_file, query_subgroup,freq_type,out_file):
                       'P','Q','R','S','T','V','W','Y','X']
             value_store = []            # Stores freqs for given pos list
             
-            # Calculate frequency of each amino acid at each position
+            # Calculate frequency of each residue within current position list
             for amino in aminos:
                 freq = position.count(amino)/length
                 if freq_type == 'log':
@@ -370,7 +379,7 @@ def derive_profiles_full(in_file, query_subgroup,freq_type,out_file):
                 value_store.append(freq)            # Append pos list          
             total_store.append(value_store)         # Overall profile
         
-        sys.stdout.write('\n')        
+        sys.stdout.write('\n')                      # Line separates 1st entry        
         amino_counter = -1                          
         for amino in aminos:
             amino_counter +=1                       #look at list position 0 

@@ -32,7 +32,7 @@ def fasta2pir(infile,outfile):
     file = SeqIO.parse(infile,'fasta')
     for record in file:
         print('>P1;'+ record.id) 
-        print(record.id)
+        print(record.id)            # Used to make PIR format work
         print(record.seq + '*')   
 
 def run_hsubgroup(query_file,matrix_file,matrix_type,out_file):
@@ -51,7 +51,7 @@ def run_hsubgroup(query_file,matrix_file,matrix_type,out_file):
     Creates a command string and runs using subproces.
     """
 
-    #having some trouble running. Need use cygwin to do so on windows
+    # Having some trouble running. Need use cygwin to do so on windows
     import subprocess
     
     # Profile version

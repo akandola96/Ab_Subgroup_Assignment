@@ -188,11 +188,11 @@ def make_fasta(input_file,version,output_file_name):
                        numbering = 7
                    elif '6A' not in numbering:
                        numbering = int(numbering[1:]) # Converts str(H1) to int(1)
-                   if numbering == 1:
+                   if numbering == 1:       # If seq starts on 1
                        keep_marker = True 
-                       sys.stdout.write(row[0])
+                       sys.stdout.write(row[0])  # Write current residue
                        break
-                   elif numbering != 1:
+                   elif numbering != 1:     # If seq doesnt start on 1, evaluate
                        # Exclude all approach
                        if version == 'EA':                       
                            keep_marker = False
@@ -215,7 +215,7 @@ def make_fasta(input_file,version,output_file_name):
             if not keep_marker:                    # If incorrect
                 continue
             elif keep_marker:                      # If correct
-                sys.stdout.write(row[0])                    
+                sys.stdout.write(row[0]) # Writes remaining residues                  
                                
 def remove_spaces(in_file):
     """
@@ -264,12 +264,16 @@ def remove_seqs_missing_residues(in_file,version,out_file):
     in_file = input file (.fasta)
     version = 'EA' or 'T6' (str)
         EA = removes all sequences with an 'X' present in first 21 residues 
-        T6 = removes all sequences with more than 6 continuous X residues in 
+        T6 = removes all sequences with more than 6 X residues in 
         first 21 residues
     out_file = output file (.fasta)
     
     Notes:
     Will be merged with remove_short_sequences function in later release
+    Whilst earlier functions ensure non-zeroed sequences receive placeholder X
+    residues, this function removes those sequences with placeholder residues 
+    already present (i.e. fundamentally in the data, rather than added by this
+    program)
     
     """
     from Bio import SeqIO
@@ -283,7 +287,7 @@ def remove_seqs_missing_residues(in_file,version,out_file):
                 print('>' + record.id)
                 print(record.seq)  
         elif version == 'T6':
-            if seq_21.count('X') <7:
+            if seq_21.count('X') <7:        # Maximum of 6
                 print('>' + record.id)
                 print(record.seq)
     
@@ -297,8 +301,10 @@ def seqkit_clean(in_file,os,out_file):
     os = 'windows' or 'linux' (str)
         Need to differentiate between using 'type' or 'cat' on command line
     out_file = output file (.fasta)
-
-    FASTA sequences of duplicate ID or Sequence are deleted
+    
+    Desc:
+    FASTA sequences of duplicate ID or Sequence are deleted.
+    Uses subprocess.call rather than subprocess.Popen as .call is blocking.
     """
 
     if os == 'windows':
@@ -322,7 +328,7 @@ def convert_seqkit(infile,outfile):
     
     Desc:
     Output of SeqKit is a FASTA file with no spaces or new line chars. This 
-    func simply reformats to make more readable.
+    func simply reformats it to make it more readable.
     
     """
     from Bio import SeqIO
