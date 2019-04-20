@@ -78,6 +78,9 @@ def determine_species_misassignment_master(in_file):
                         'Oryctolagus cuniculus','Oncorhynchus mykiss']
     for organism in query_organisms:
         determine_species_misassignment_FNs(in_file,organism)
+        
+    for organism in query_organisms:
+        determine_species_misassignment_FPs(in_file,organism)
 
 def determine_species_misassignment_FNs(in_file, organism):
     """Determines which species get misclassified as the other, FNs only
@@ -109,6 +112,46 @@ def determine_species_misassignment_FNs(in_file, organism):
                 elif 'Oncorhynchus mykiss' in assigned_org:
                     mykiss+=1
                     
+    print('FALSE NEGATIVES')
+                    
+    print('Query organism:', organism)
+    print('Macaca:',macaca,'Mouse:', mouse,'Oryctolagus:', oryctolagus, 
+            'Homo:',homo,'Mykiss: ',mykiss)
+    print('Sum:',macaca+mouse+oryctolagus+homo+mykiss)
+    print('\n')
+    
+def determine_species_misassignment_FPs(in_file,organism):
+    """Determines which species get misclassified as the other, FPs only
+    
+    Outputs to console. No need for dedicated output file
+    
+    """
+    import csv
+    with open(in_file) as csv_in:
+        reader = csv.reader(csv_in)
+        macaca = 0 
+        mouse = 0 
+        oryctolagus = 0 
+        homo = 0
+        mykiss = 0  
+        for row in reader:
+            assigned_org = str(row[1])
+            actual_org = str(row[8]) 
+                        
+            if organism in assigned_org and organism not in actual_org:
+                if 'Macaca' in actual_org:
+                    macaca +=1
+                elif 'Mus' in actual_org:
+                    mouse+=1
+                elif 'Oryctolagus' in actual_org:
+                    oryctolagus+=1
+                elif 'Homo' in actual_org:
+                    homo+=1
+                elif 'Oncorhynchus' in actual_org:
+                    mykiss+=1
+                    
+    
+    print('FALSE POSITIVES')
     print('Query organism:', organism)
     print('Macaca:',macaca,'Mouse:', mouse,'Oryctolagus:', oryctolagus, 
             'Homo:',homo,'Mykiss: ',mykiss)

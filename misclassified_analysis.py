@@ -1,4 +1,20 @@
 #%%
+def phrases(phrase,text):
+    """
+    Summary:
+    Replaces using 'in', which is non-specific.
+    
+    Args:
+    phrase = text to find (str)
+    text = text to search in (str)
+    
+    Desc:    
+    Returns true if EXACT match between strings is found, false oteherwise. 
+    Case insensitive.
+    Can differentiate between IGHV1 and IGHV10, which 'in' cannot.
+    """    
+    import re
+    return re.search(r"\b{}\b".format(phrase), text, re.IGNORECASE) is not None
 def extract_misclassified_subgroup(in_file, fasta_file, subgroup, sentence,out_file,misclassified_type,pull_assignment):
                     
     """
@@ -122,7 +138,7 @@ def extract_random_TPs(in_file,subgroup,sentence, number,fasta_file,
         If Y, extracts sequence to file.
         
     Desc:
-        \
+        For use in phylo trees
 """   
     import csv
     import sys

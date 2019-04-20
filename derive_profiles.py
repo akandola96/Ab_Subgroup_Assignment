@@ -280,6 +280,7 @@ def derive_profiles_2line(in_file, query_subgroup,freq_type,out_file):
                 freq_mode2 = freq_mode
             
             
+            # Perform logs after
             if freq_type == 'log':
                 freq_mode +=1
                 freq_mode = math.log(freq_mode,10)
