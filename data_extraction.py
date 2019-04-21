@@ -1,12 +1,10 @@
 
 #%%
-def data_extractor(xml_in,query_organism,version,os,output_name):
+def data_extractor(abysis_in,query_organism,version,os,output_name):
     
-    xml_parser(xml_in,query_organism,'abysis.csv')
+    count_abysis(abysis_in)
     
-    count_abysis('abysis.csv')
-    
-    make_fasta('abysis.csv',version,'raw_queries.fasta')
+    make_fasta(abysis_in,version,'raw_queries.fasta')
     
     remove_spaces('raw_queries.fasta')
     

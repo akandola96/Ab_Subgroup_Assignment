@@ -1,4 +1,17 @@
 #%%
+def master_core_analysis(queries_file,profile_type,organism):
+    
+    fasta2pir(queries_file,'PIR_queries.pir')
+    
+    run_hsubgroup('PIR_queries.pir','profiles.txt',profile_type,'hsub_scores.csv')
+    
+    attach_scores_to_queries(queries_file,'hsub_scores.csv','seqs_scores.csv')
+    
+    make_final_results('seqs_scores.csv','blout_queries.csv',organism,'final_results.csv')
+    
+    check_assignment('final_results.csv','blout_queries.csv',organism,'MCC.csv')
+
+
 def phrases(phrase,text):
     """
     Summary:
@@ -35,7 +48,7 @@ def fasta2pir(infile,outfile):
         print(record.id)            # Used to make PIR format work
         print(record.seq + '*')   
 
-def run_hsubgroup(query_file,matrix_file,matrix_type,out_file):
+def run_hsubgroup(query_file,profiles_file,profile_type,out_file):
     """
     Summary:
     Takes PIR formatted query sequences and profiles and runs hsubgroup
@@ -49,24 +62,22 @@ def run_hsubgroup(query_file,matrix_file,matrix_type,out_file):
     
     Desc:
     Creates a command string and runs using subproces.
+    Taking logarithms of residue frequencies within profiles is performed by 
+    the python code. Thus, the -p flag available in hsubgroup is NOT USED.
     """
 
     # Having some trouble running. Need use cygwin to do so on windows
     import subprocess
     
     # Profile version
-    if matrix_type == 'full':
-        matrix_type == '-f'
-    elif matrix_type =='2line':
-        matrix_type == ''
-    
-    cmd = ('hsubgroup -d ' + matrix_file + ' -v ' + matrix_type +' ' 
-           + query_file + ' > ' + out_file)
-       
-    hsubgroup_run = subprocess.Popen(cmd,shell=True) 
-    hsubgroup_run.wait()
- 
+    if profile_type == 'full':
+        cmd = 'hsubgroup -d ' + profiles_file + ' -v -f ' +  query_file + ' > ' + out_file
         
+    elif profile_type =='2line':
+        cmd = 'hsubgroup -d ' + profiles_file + ' -v ' + query_file + ' > ' + out_file
+        
+    subprocess.call(cmd,shell=True)
+            
 def attach_scores_to_queries(in_file,score_file,out_file):
     """
     Summary:

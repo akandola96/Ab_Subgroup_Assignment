@@ -1,4 +1,23 @@
 #%%
+def blast_steps(queries_file,ref_seq_file,organism,db_name):
+    
+    extract_ref_data(ref_seq_file,organism,'V','reference_seqs.fasta')
+    
+    make_ref_blastdb('reference_seqs.fasta',db_name)
+    
+    tBLASTn_full(queries_file,db_name,'blast_output.xml')
+    
+    
+def blast_output_formatting(queries):
+    
+    blast_output_xml2csv('blast_output.xml',1,'converted_blast_output.csv')
+    
+    convert_queries2csv(queries,'queries_21_residues.csv')
+    
+    join_queries2blout('converted_blast_output.csv','queries_21_residues.csv','blout_queries.csv')
+
+
+
 def extract_ref_data(in_file,organism, region, out_file):
     """
     Summary:
@@ -47,7 +66,7 @@ def make_ref_blastdb(in_file,db_name):
     import subprocess
     cmd = ('makeblastdb -in ' +in_file + ' -out '+db_name 
            +' -dbtype nucl -parse_seqids')
-    subprocess.Popen(cmd)
+    subprocess.call(cmd)
 
 
 def tBLASTn_full(queries,db_name,out_file):
@@ -70,9 +89,7 @@ def tBLASTn_full(queries,db_name,out_file):
     with open(out_file,'a') as out:
         cmd = ('tblastn -query ' + queries + ' -db ' + db_name 
                + ' -soft_masking false -seg no -outfmt 5')
-        subprocess.Popen(cmd,stdout=out) 
-        # Need to add a line that makes it wait till completion 
-
+        subprocess.call(cmd,stdout=out) 
         
 def count_xml_blast_records(in_file):
     """

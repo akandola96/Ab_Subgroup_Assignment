@@ -1,4 +1,11 @@
 #%%
+def master_derive_profiles(query_organism,freq_type, matrix_type):
+    loci = ['Heavy','Kappa','Lambda']
+    for locus in loci:
+        get_profiles(locus, 'blout_queries.csv', 'profiles.txt',query_organism,freq_type,matrix_type)
+    
+
+
 def phrases(phrase,text):
     """
     Summary:
