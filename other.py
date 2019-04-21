@@ -1,4 +1,16 @@
 def make_random_fasta_file(number_seqs,out_file):
+    """
+    Summary:
+    Generates random number of FASTA sequences of length 200.
+    
+    Args:
+    number_seqs = number of sequences desired (int)
+    out_file = named output file (.fasta)
+    
+    Desc:
+    Was originally used to benchmark BLAST speed vs hsubgroup. 
+    """
+    
     import sys  
     import random 
     sys.stdout = open(out_file,'a+')
