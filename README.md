@@ -138,6 +138,8 @@ O. cuniculus and O. mykiss subgroups are all labelled as intrasubgroup subgroups
  This is referred to as the *full_results* file and it is the main file used for analysis of classifier performance. 
  
  **check_assignment**: Function derives the MCC for each subgroup, using the *full_results* file to do so. In the example of the *full_results* file shown above, **check_assignment** compares the primary assignment made by hsubgroup, in column 2 to the assignment made by BLAST in column 7. In the first row of this example file, hsugbroup has made the correct assignment of IGKV1. In the second row, hsubgroup has made an incorrect assignment; the subgroup assignment in column 2 does not match that in column 7. This incorrect assignment is also reflected by a low primary score by hsubgroup, indicating that the classifier is not 'confident' in its assignment. The output of this function is a .csv file containing performance measures for each subgroup. The 9th column contains the query organism, used in downstream analysis.
+ 
+ This function handles intrasubgroup subgroups in the following manner: For each subgroup evaluated the numeric code of the subgroup is determined by the *my_dict[x]* line. The *alt_x* variable adds an 'S' character to the end of this numeric code.Confusion matrix variables are alteratively evaluated using the *alt_x* variable.
 
  ## Misclassified Analysis 
 
@@ -162,5 +164,9 @@ O. cuniculus and O. mykiss subgroups are all labelled as intrasubgroup subgroups
  **determine_species_misassignment_FNs**: For a given organism, determines FNs. Outputs to console. 
  
  **determine_species_misassignment_FPs**: For a given organism, determines FPs. Outputs to console. 
+ 
+ ## Difference in scores
+ 
+ 
  
  
