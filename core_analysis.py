@@ -1,15 +1,10 @@
-#%%
-def master_core_analysis(queries_file,profile_type,organism):
-    
-    fasta2pir(queries_file,'PIR_queries.pir')
-    
-    run_hsubgroup('PIR_queries.pir','profiles.txt',profile_type,'hsub_scores.csv')
-    
-    attach_scores_to_queries(queries_file,'hsub_scores.csv','seqs_scores.csv')
+#%%    
+def master_core_analysis(queries_file,scores_file,organism,out_file):
+    attach_scores_to_queries(queries_file,scores_file,'seqs_scores.csv')
     
     make_final_results('seqs_scores.csv','blout_queries.csv',organism,'final_results.csv')
     
-    check_assignment('final_results.csv','blout_queries.csv',organism,'MCC.csv')
+    check_assignment('final_results.csv','blout_queries.csv',organism,out_file)
 
 
 def phrases(phrase,text):
