@@ -10,8 +10,9 @@
 This will produce a CSV file containing extracted sequence data. 
 If multiple XML files are present, each should be parsed individually and the resultant CSV files concatenated on the command line. 
 
-2) Run the *make_fasta* function on the CSV file produced from step 1 to extract FASTA formatted query sequences: `data_extractor('abysis.csv','T6','raw_queries.fasta)`  
+2) Run the *make_fasta* function on the CSV file produced from step 1 to extract FASTA formatted query sequences: `make_fasta('abysis.csv','T6','raw_queries.fasta)`  
 -Extracts queries into FASTA format    
+-'T6' employs placeholder approach
 
 3) Run the *remove_spaces* function on the output file of the previous step: `remove_spaces('raw_queries.fasta')`    
 -Removes spaces within the file 
@@ -20,10 +21,11 @@ If multiple XML files are present, each should be parsed individually and the re
 -Removes short sequences of length < 21  
 
 5) Run *remove_seqs_missing_residues*: `remove_seqs_missing_residues('raw_queries_b.fasta','T6','raw_queries_c.fasta')`  
--Removes sequences missing residues in their N-terminus 
+-Removes sequences missing residues in their N-terminus   
+-Nature of sequences removed depends on whether version is set to 'EA' or 'T6'. Needs to be consistent.  
 
 6) Run *seqkit_clean*: `seqkit_clean('raw_queries_c.fasta','windows','raw_queries_d.fasta')`  
-Cleans queries for duplicates using SeqKit
+Cleans queries for duplicates using SeqKit.  
 
 7) Run *convert_seqkit*: `convert_seqkit('raw_queries_d.fasta',queries.fasta')`      
 -Converts SeqKit output into more readable format.  
