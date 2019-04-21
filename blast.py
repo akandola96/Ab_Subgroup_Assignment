@@ -1,6 +1,17 @@
 #%%
 def blast_steps(queries_file,ref_seq_file,organism,db_name):
     
+    """
+    Summary:
+    Master function for BLAST steps.
+    
+    Args:
+    queries_file = queries file derived from previous steps (.fasta)
+    ref_seq_file = file containing reference sequences (.fasta)
+    organism = query organism (str)
+    db_name = chosen database name (str)
+    """
+    
     extract_ref_data(ref_seq_file,organism,'V','reference_seqs.fasta')
     
     make_ref_blastdb('reference_seqs.fasta',db_name)
@@ -9,6 +20,13 @@ def blast_steps(queries_file,ref_seq_file,organism,db_name):
     
     
 def blast_output_formatting(queries):
+    """
+    Summary:
+    Master function for BLAST formatting steps.
+    
+    Args:
+    queries = queries file (.fasta)    
+    """
     
     blast_output_xml2csv('blast_output.xml',1,'converted_blast_output.csv')
     
