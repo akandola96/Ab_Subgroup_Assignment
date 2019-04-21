@@ -1,6 +1,17 @@
 #%%
 def data_extractor(abysis_in,query_organism,version,os,output_name):
     
+    """
+    Summary:
+    Master function. Produces query sequence file
+    
+    Args:
+    abysis_in = extracted abysis data (.csv)
+    query_organism = query organism (str)
+    version = either 'T6' OR 'EA' (str)
+    os = either 'windows' OR 'linux' (str)
+    output_name = desired name of queries file (.fasta)
+    """
     count_abysis(abysis_in)
     
     make_fasta(abysis_in,version,'raw_queries.fasta')
@@ -15,9 +26,9 @@ def data_extractor(abysis_in,query_organism,version,os,output_name):
     
     convert_seqkit('queries_c.fasta',output_name)
     
-    tidy_up()
     
 def tidy_up():
+    """Deletes redundant files"""
     import os
     os.remove('queries_a.fasta')
     os.remove('queries_b.fasta')
@@ -244,7 +255,7 @@ def remove_short_sequences(infile,outfile):
     infile = input file (.fasta)
     outfile = output file (.fasta)
     """    
-    from bio import SeqIO
+    from Bio import SeqIO
     import sys 
     sys.stdout = open(outfile,'a')
     for record in SeqIO.parse(infile,'fasta'):
@@ -273,7 +284,7 @@ def remove_seqs_missing_residues(in_file,version,out_file):
     program)
     
     """
-    from bio import SeqIO
+    from Bio import SeqIO
     import sys
     sys.stdout = open(out_file,'a')
     for record in SeqIO.parse(in_file,'fasta'):
@@ -328,7 +339,7 @@ def convert_seqkit(infile,outfile):
     func simply reformats it to make it more readable.
     
     """
-    from bio import SeqIO
+    from Bio import SeqIO
     import sys 
     sys.stdout = open(outfile,'a')
     file = SeqIO.parse(infile,'fasta')
@@ -347,7 +358,7 @@ def count_num_queries(in_file):
     Desc:
     Used for figure making. Not essential. 
     """
-    from bio import SeqIO
+    from Bio import SeqIO
     count = 0 
     for record in SeqIO.parse(in_file,'fasta'):
         if len(str(record.seq)) > 1:
