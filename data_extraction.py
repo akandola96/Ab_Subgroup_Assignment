@@ -115,8 +115,7 @@ def data_extractor(abysis_in,version):
     os = either 'windows' OR 'linux' (str)
     output_name = desired name of queries file (.fasta)
     """
-    count_abysis(abysis_in)
-    
+
     make_fasta(abysis_in,version,'raw_queries.fasta')
     
     remove_spaces('raw_queries.fasta')
@@ -130,7 +129,7 @@ def original_make_fasta(input_file,output_file_name):
     """Extracts all sequences from abysis data"""
     import csv
     import sys
-    csv_f = csv.reader(open(input_file))
+    csv_f = csv.reader(open(input_file,newline=''))
     sys.stdout=open(output_file_name,'a')
     for row in csv_f:
         if row[0] == '>':
@@ -328,7 +327,7 @@ def convert_seqkit(infile,outfile):
     func simply reformats it to make it more readable.
     
     """
-    outfile = 'queries333.fasta'
+    outfile = 'queries.fasta'
     from Bio import SeqIO
     import sys 
     sys.stdout = open(outfile,'a')
