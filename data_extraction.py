@@ -1,39 +1,4 @@
 #%%
-def data_extractor(abysis_in,query_organism,version,os,output_name):
-    
-    """
-    Summary:
-    Master function. Produces query sequence file
-    
-    Args:
-    abysis_in = extracted abysis data (.csv)
-    query_organism = query organism (str)
-    version = either 'T6' OR 'EA' (str)
-    os = either 'windows' OR 'linux' (str)
-    output_name = desired name of queries file (.fasta)
-    """
-    count_abysis(abysis_in)
-    
-    make_fasta(abysis_in,version,'raw_queries.fasta')
-    
-    remove_spaces('raw_queries.fasta')
-    
-    remove_short_sequences('raw_queries.fasta','queries_a.fasta')
-    
-    remove_seqs_missing_residues('queries_a.fasta',version,'queries_b.fasta')
-    
-    seqkit_clean('queries_b.fasta',os,'queries_c.fasta')
-    
-    convert_seqkit('queries_c.fasta',output_name)
-    
-    
-def tidy_up():
-    """Deletes redundant files"""
-    import os
-    os.remove('queries_a.fasta')
-    os.remove('queries_b.fasta')
-    os.remove('queries_c.fasta')
-
 def xml_parser(input_file,query_organism,output_file_name):
     """
     Summary:
@@ -125,6 +90,37 @@ def xml_parser(input_file,query_organism,output_file_name):
                     sys.stdout.write('*' +',' + '*' +',' + '*' + '\n')
                     
     return('XML file parsed')
+    
+def data_extractor(abysis_in,query_organism,version,os,output_name):
+    
+    """
+    Summary:
+    Master function. Produces query sequence file
+    
+    Args:
+    abysis_in = extracted abysis data (.csv)
+    query_organism = query organism (str)
+    version = either 'T6' OR 'EA' (str)
+    os = either 'windows' OR 'linux' (str)
+    output_name = desired name of queries file (.fasta)
+    """
+    count_abysis(abysis_in)
+    
+    make_fasta(abysis_in,version,'raw_queries.fasta')
+    
+    remove_spaces('raw_queries.fasta')
+    
+    remove_short_sequences('raw_queries.fasta','queries_a.fasta')
+    
+    remove_seqs_missing_residues('queries_a.fasta',version,'queries_b.fasta')
+    
+    
+def tidy_up():
+    """Deletes redundant files"""
+    import os
+    os.remove('queries_a.fasta')
+    os.remove('queries_b.fasta')
+    os.remove('queries_c.fasta')    
                     
 def count_abysis(in_file):
     """Counts number of records extracted from abYsis into csv file"""
