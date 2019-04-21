@@ -46,9 +46,11 @@ The result of these steps is the *blout_queries* file, the format of which can b
 
 ### core_analysis.py
 
-7) Run the *master_core_analysis* function to produce an output file containing subgroup MCC values: `master_core_analysis('queries.fasta','2line','Mus musculus')`  
--Converts queries to PIR  
--Runs hsubgroup   
+7) Run the *fasta2pir* function to convert queries into hsubgroup compatible form: `fasta2pir('queries.fasta','PIR_queries.fasta')`  
+
+8) Run *run_hsubgroup* to score input sequences: `run_hsubgroup('PIR_queries.pir','profiles.txt','2line','hsub_scores.csv')`    
+
+9) Run the *master_core_analysis* function to produce an output file containing subgroup MCC values: `master_core_analysis('queries.fasta','hsub_scores.csv','Mus musculus','MCC.csv')`  
 -Joins hsubgroup scores to query sequence IDs --> known as the seq_scores file  
 -Joins seqs_scores file to blout_queries file  --> known as the final_results file  
 -Checks assignment  
