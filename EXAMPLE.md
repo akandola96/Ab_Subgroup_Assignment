@@ -14,7 +14,7 @@ If multiple XML files are present, each should be parsed individually and the re
   
 -Extracts queries into FASTA format  
 -Removes spaces within the file   
--Removes short sequences of length < 21
+-Removes short sequences of length < 21  
 -Removes sequences missing residues in their N-terminus  
 -Removes duplicates using SeqKit  
 -Converts output of SeqKit step into a more human readable format   
