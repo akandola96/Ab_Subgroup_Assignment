@@ -284,3 +284,5 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
 
         # Makes MCC values available for other functions
         return MCC_list
+    
+    

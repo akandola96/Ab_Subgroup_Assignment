@@ -1,4 +1,3 @@
-
 #%%
 def data_extractor(abysis_in,query_organism,version,os,output_name):
     
@@ -131,7 +130,7 @@ def original_make_fasta(input_file,output_file_name):
     """Extracts all sequences from abysis data"""
     import csv
     import sys
-    csv_f = csv.reader(open(input_file,newline=''))
+    csv_f = csv.reader(open(input_file))
     sys.stdout=open(output_file_name,'a')
     for row in csv_f:
         if row[0] == '>':
