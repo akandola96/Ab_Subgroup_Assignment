@@ -24,7 +24,7 @@ This function will produce a FASTA formatted queries file
 3) Optional - Run the *tidy_up* function to remove redundant files: `tidy_up()`  
 
 ### blast.py
-4) Run the *blast_steps* function using the query sequence file created in step 2 and the IMGT reference data found in the *data* folder to perform a tBLASTn search: `blast_steps('queries.fasta','imgtrefseqs.fasta','mus musculs','ref_db')`  
+4) Run the *blast_steps* function using the query sequence file created in step 2 and the IMGT reference data found in the *data* folder to perform a tBLASTn search: `blast_steps('queries.fasta','imgtrefseqs.fasta','mus musculus','ref_db')`  
 -Extracts reference sequences from IMGT data  
 -Makes a BLAST database based on this  
 -Runs tBLASTN  
