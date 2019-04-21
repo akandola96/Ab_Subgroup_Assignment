@@ -102,29 +102,6 @@ def count_abysis(in_file):
                 count +=1
         return(count)    
     
-def data_extractor(abysis_in,version):
-    
-    """
-    Summary:
-    Master function. Produces query sequence file
-    
-    Args:
-    abysis_in = extracted abysis data (.csv)
-    query_organism = query organism (str)
-    version = either 'T6' OR 'EA' (str)
-    os = either 'windows' OR 'linux' (str)
-    output_name = desired name of queries file (.fasta)
-    """
-
-    make_fasta(abysis_in,version,'raw_queries.fasta')
-    
-    remove_spaces('raw_queries.fasta')
-    
-    remove_short_sequences('raw_queries.fasta','raw_queries_a.fasta')
-    
-    remove_seqs_missing_residues('raw_queries_a.fasta',version,'raw_queries_b.fasta')
-    
-
 def original_make_fasta(input_file,output_file_name):
     """Extracts all sequences from abysis data"""
     import csv
