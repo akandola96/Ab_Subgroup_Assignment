@@ -308,11 +308,11 @@ def seqkit_clean(in_file,os,out_file):
         import subprocess 
         cmd = ('type ' + in_file +' | seqkit rmdup -n | seqkit rmdup -s -o ' 
                + out_file)
-        subprocess.call(cmd,shell=True)
+        subprocess.Popen(cmd,shell=True)
     elif os == 'linux':
         cmd = ('cat ' + in_file +' | seqkit rmdup -n | seqkit rmdup -s -o ' 
                + out_file)
-        subprocess.call(cmd)
+        subprocess.Popen(cmd)
        
 def convert_seqkit(infile,outfile):
     """
@@ -328,7 +328,7 @@ def convert_seqkit(infile,outfile):
     func simply reformats it to make it more readable.
     
     """
-    outfile = 'queries.fasta'
+    outfile = 'queries333.fasta'
     from Bio import SeqIO
     import sys 
     sys.stdout = open(outfile,'a')
