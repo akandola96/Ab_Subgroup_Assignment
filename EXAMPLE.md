@@ -22,10 +22,10 @@ If multiple XML files are present, each should be parsed individually and the re
 5) Run *remove_seqs_missing_residues*: `remove_seqs_missing_residues('raw_queries_b.fasta','T6','raw_queries_c.fasta')`  
 -Removes sequences missing residues in their N-terminus 
 
-6) Run *seqkit_clean*: `seqkit_clean('raw_queries_c.fasta','windows','raw_queries_d.fasta')`
+6) Run *seqkit_clean*: `seqkit_clean('raw_queries_c.fasta','windows','raw_queries_d.fasta')`  
 Cleans queries for duplicates using SeqKit
 
-7) Run *convert_seqkit*: `convert_seqkit('raw_queries_d.fasta',queries.fasta')` 
+7) Run *convert_seqkit*: `convert_seqkit('raw_queries_d.fasta',queries.fasta')`      
 -Converts SeqKit output into more readable format.  
 
   
