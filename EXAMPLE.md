@@ -10,16 +10,22 @@
 This will produce a CSV file containing extracted sequence data. 
 If multiple XML files are present, each should be parsed individually and the resultant CSV files concatenated on the command line. 
 
-2) Run the *data_extractor* function on the CSV file produced from step 1 to extract FASTA formatted query sequences: `data_extractor('abysis.csv','mus musculus','T6','windows','queries.fasta')`  
+2) Run the *data_extractor* function on the CSV file produced from step 1 to extract FASTA formatted query sequences: `data_extractor('abysis.csv','T6')`  
   
 -Extracts queries into FASTA format  
 -Removes spaces within the file   
 -Removes short sequences of length < 21  
 -Removes sequences missing residues in their N-terminus  
+The 'T6' refers to use of the placeholder approach. 
+
+3) Run the *seqkit_clean* function on the output of *data_extractor*: `seqkit_clean('raw_queries_b.fasta','windows','raw_queries_c.fasta')`    
+'windows' refers to use of a windows operating system  
+  
 -Removes duplicates using SeqKit  
+
+4) Run the *convert_seqkit* function on the output of *seqkit_clean*: `seqkit_clean('raw_queries_c.fasta','queries.fasta')  
 -Converts output of SeqKit step into a more human readable format    
-The 'T6' refers to use of the placeholder approach. 'windows' refers to use of a windows operating system  
-This function will produce a FASTA formatted queries file 
+This function will produce a FASTA formatted queries file   
 
 3) Optional - Run the *tidy_up* function to remove redundant files: `tidy_up()`  
 
