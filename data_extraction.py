@@ -165,7 +165,7 @@ def make_fasta(input_file,version,output_file_name):
     """
     import csv
     import sys
-    csv_f = csv.reader(open(input_file,newline=''))
+    csv_f = csv.reader(open(input_file))
     sys.stdout=open(output_file_name,'a')
     
     for row in csv_f:     
@@ -244,7 +244,7 @@ def remove_short_sequences(infile,outfile):
     infile = input file (.fasta)
     outfile = output file (.fasta)
     """    
-    from Bio import SeqIO
+    from bio import SeqIO
     import sys 
     sys.stdout = open(outfile,'a')
     for record in SeqIO.parse(infile,'fasta'):
@@ -273,7 +273,7 @@ def remove_seqs_missing_residues(in_file,version,out_file):
     program)
     
     """
-    from Bio import SeqIO
+    from bio import SeqIO
     import sys
     sys.stdout = open(out_file,'a')
     for record in SeqIO.parse(in_file,'fasta'):
@@ -328,7 +328,7 @@ def convert_seqkit(infile,outfile):
     func simply reformats it to make it more readable.
     
     """
-    from Bio import SeqIO
+    from bio import SeqIO
     import sys 
     sys.stdout = open(outfile,'a')
     file = SeqIO.parse(infile,'fasta')
@@ -347,7 +347,7 @@ def count_num_queries(in_file):
     Desc:
     Used for figure making. Not essential. 
     """
-    from Bio import SeqIO
+    from bio import SeqIO
     count = 0 
     for record in SeqIO.parse(in_file,'fasta'):
         if len(str(record.seq)) > 1:
