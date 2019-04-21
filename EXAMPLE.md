@@ -17,7 +17,7 @@ If multiple XML files are present, each should be parsed individually and the re
 -Removes short sequences of length < 21  
 -Removes sequences missing residues in their N-terminus  
 -Removes duplicates using SeqKit  
--Converts output of SeqKit step into a more human readable format   
+-Converts output of SeqKit step into a more human readable format    
 The 'T6' refers to use of the placeholder approach. 'windows' refers to use of a windows operating system.
 This will produce a FASTA formatted queries file 
 
@@ -26,10 +26,10 @@ This will produce a FASTA formatted queries file
 ### blast.py
 4) Run the *blast_steps* function using the query sequence file created in step 2 and the IMGT reference data found in the *data* folder to perform a tBLASTn search: `blast_steps('queries.fasta','imgtrefseqs.fasta','mus musculs','ref_db')`  
 -Extracts reference sequences from IMGT data  
--Makes a BLAST database based on this 
--Runs tBLASTN
-This step will output a reference database in addition to an XML file containing BLAST results.   
-This step can take some time depending on the number of queries being evaluated.  
+-Makes a BLAST database based on this  
+-Runs tBLASTN  
+This step will output a reference database in addition to an XML file containing BLAST results.    
+This step can take some time depending on the number of queries being evaluated.    
 
 5) Run the *blast_output_formatting* function to organise the results of step 4 and create the blout_queries file: `blast_output_formatting('queries.fasta')`  
 -Parses the XML formatted BLAST output and converts it to CSV.  
