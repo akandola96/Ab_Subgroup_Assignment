@@ -5,7 +5,7 @@
 ## Core Analysis
 
 ### data_extraction.py 
-1) Run the *xml_parser* function on an input XML file: xml_parser('kabat.xml','mus musculus','abysis.csv') 
+1) Run the *xml_parser* function on an input XML file: `xml_parser('kabat.xml','mus musculus','abysis.csv')` 
 
 This will produce a CSV file containing extracted sequence data. 
 If multiple XML files are present, each should be parsed individually and the resultant CSV files concatenated on the command line. 
