@@ -18,8 +18,8 @@ If multiple XML files are present, each should be parsed individually and the re
 -Removes sequences missing residues in their N-terminus  
 -Removes duplicates using SeqKit  
 -Converts output of SeqKit step into a more human readable format    
-The 'T6' refers to use of the placeholder approach. 'windows' refers to use of a windows operating system.
-This will produce a FASTA formatted queries file 
+The 'T6' refers to use of the placeholder approach. 'windows' refers to use of a windows operating system  
+This function will produce a FASTA formatted queries file 
 
 3) Optional - Run the *tidy_up* function to remove redundant files: `tidy_up()`  
 
