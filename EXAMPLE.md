@@ -1,6 +1,6 @@
 # Example code run
 
-#### This file contains a simple code run through based on the data files present in the data folder. 
+#### This file contains a simple code run based on Mus musculus and the data files present in the data folder. 
 
 ## Core Analysis
 
