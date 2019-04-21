@@ -38,6 +38,6 @@ The result of these steps is the *blout_queries* file, the format of which can b
 7) Run the *master_core_analysis* function to produce an output file containing subgroup MCC values: `master_core_analysis('queries.fasta','2line','Mus musculus')`
 Converts queries to PIR. 
 Runs hsubgroup 
-Joins hsubgroup scores to query sequence IDs --> known as the seq_scores file
-Joins seqs_scores file to blout_queries file  --> known as the final_results file
-Checks assignment
+Joins hsubgroup scores to query sequence IDs --> known as the seq_scores file  
+Joins seqs_scores file to blout_queries file  --> known as the final_results file  
+Checks assignment  
