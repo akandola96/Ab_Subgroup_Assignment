@@ -91,7 +91,18 @@ def xml_parser(input_file,query_organism,output_file_name):
                     
     return('XML file parsed')
     
-def data_extractor(abysis_in,query_organism,version,os,output_name):
+def count_abysis(in_file):
+    """Counts number of records extracted from abYsis into csv file"""
+    import csv   
+    with open(in_file,'r') as csv_in:
+        reader = csv.reader(csv_in)
+        count = 0 
+        for row in reader:
+            if row[0] == '>':
+                count +=1
+        return(count)    
+    
+def data_extractor(abysis_in,version):
     
     """
     Summary:
@@ -110,28 +121,10 @@ def data_extractor(abysis_in,query_organism,version,os,output_name):
     
     remove_spaces('raw_queries.fasta')
     
-    remove_short_sequences('raw_queries.fasta','queries_a.fasta')
+    remove_short_sequences('raw_queries.fasta','raw_queries_a.fasta')
     
-    remove_seqs_missing_residues('queries_a.fasta',version,'queries_b.fasta')
+    remove_seqs_missing_residues('raw_queries_a.fasta',version,'raw_queries_b.fasta')
     
-    
-def tidy_up():
-    """Deletes redundant files"""
-    import os
-    os.remove('queries_a.fasta')
-    os.remove('queries_b.fasta')
-    os.remove('queries_c.fasta')    
-                    
-def count_abysis(in_file):
-    """Counts number of records extracted from abYsis into csv file"""
-    import csv   
-    with open(in_file,'r') as csv_in:
-        reader = csv.reader(csv_in)
-        count = 0 
-        for row in reader:
-            if row[0] == '>':
-                count +=1
-        return(count)
 
 def original_make_fasta(input_file,output_file_name):
     """Extracts all sequences from abysis data"""
@@ -335,6 +328,7 @@ def convert_seqkit(infile,outfile):
     func simply reformats it to make it more readable.
     
     """
+    outfile = 'queries.fasta'
     from Bio import SeqIO
     import sys 
     sys.stdout = open(outfile,'a')
@@ -360,3 +354,11 @@ def count_num_queries(in_file):
         if len(str(record.seq)) > 1:
             count+=1
     print(count)
+
+def tidy_up():
+    """Deletes redundant files"""
+    import os
+    os.remove('raw_queries_a.fasta')
+    os.remove('raw_queries_b.fasta')
+    os.remove('raw_queries_c.fasta')    
+                        
