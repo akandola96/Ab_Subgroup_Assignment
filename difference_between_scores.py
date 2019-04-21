@@ -1,5 +1,17 @@
 #%%
 def difference_in_scores(in_file,blout_queries_file,organism):
+    """
+    Summary:
+    Calculates the difference between the primary and secondary scores of 
+    correctly and incorrectly assigned sequences.
+    
+    Args:
+    in_file = full results file for an organism (.csv)
+    blout_queries_file = blout queries file for the organism (.csv)
+    organism = organism (str)
+    
+    """
+    
     import csv
     import statistics
     import matplotlib.pyplot as plt
