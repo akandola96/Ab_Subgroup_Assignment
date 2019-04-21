@@ -12,12 +12,12 @@ If multiple XML files are present, each should be parsed individually and the re
 
 2) Run the *data_extractor* function on the CSV file produced from step 1 to extract FASTA formatted query sequences: `data_extractor('abysis.csv','mus musculus','T6','windows','queries.fasta')`  
   
-Extracts queries into FASTA format  
-Removes spaces within the file   
-Removes short sequences of length < 21
-Removes sequences missing residues in their N-terminus  
-Removes duplicates using SeqKit  
-Converts output of SeqKit step into a more human readable format   
+-Extracts queries into FASTA format  
+-Removes spaces within the file   
+-Removes short sequences of length < 21
+-Removes sequences missing residues in their N-terminus  
+-Removes duplicates using SeqKit  
+-Converts output of SeqKit step into a more human readable format   
 The 'T6' refers to use of the placeholder approach. 'windows' refers to use of a windows operating system.
 This will produce a FASTA formatted queries file 
 
@@ -25,16 +25,16 @@ This will produce a FASTA formatted queries file
 
 ### blast.py
 4) Run the *blast_steps* function using the query sequence file created in step 2 and the IMGT reference data found in the *data* folder to perform a tBLASTn search: `blast_steps('queries.fasta','imgtrefseqs.fasta','mus musculs','ref_db')`  
-Extracts reference sequences from IMGT data  
-Makes a BLAST database based on this 
-Runs tBLASTN
+-Extracts reference sequences from IMGT data  
+-Makes a BLAST database based on this 
+-Runs tBLASTN
 This step will output a reference database in addition to an XML file containing BLAST results.   
 This step can take some time depending on the number of queries being evaluated.  
 
 5) Run the *blast_output_formatting* function to organise the results of step 4 and create the blout_queries file: `blast_output_formatting('queries.fasta')`  
-Parses the XML formatted BLAST output and converts it to CSV.  
-Extracts the first 21 residues of query sequences and stores in a CSV.  
-Combines these two CSV files.  
+-Parses the XML formatted BLAST output and converts it to CSV.  
+-Extracts the first 21 residues of query sequences and stores in a CSV.  
+-Combines these two CSV files.  
 For each query sequence the top hit will be extracted.  
 The result of these steps is the *blout_queries* file, the format of which can be seen in the ReadMe file.   
 
@@ -47,8 +47,8 @@ The result of these steps is the *blout_queries* file, the format of which can b
 ### core_analysis.py
 
 7) Run the *master_core_analysis* function to produce an output file containing subgroup MCC values: `master_core_analysis('queries.fasta','2line','Mus musculus')`  
-Converts queries to PIR  
-Runs hsubgroup   
-Joins hsubgroup scores to query sequence IDs --> known as the seq_scores file  
-Joins seqs_scores file to blout_queries file  --> known as the final_results file  
-Checks assignment  
+-Converts queries to PIR  
+-Runs hsubgroup   
+-Joins hsubgroup scores to query sequence IDs --> known as the seq_scores file  
+-Joins seqs_scores file to blout_queries file  --> known as the final_results file  
+-Checks assignment  
