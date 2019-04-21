@@ -171,6 +171,8 @@ O. cuniculus and O. mykiss subgroups are all labelled as intrasubgroup subgroups
  
  ### Determines the difference in scores between between correctly assigned and incorrectly assigned sequences. 
  
+ **difference_in_scores**: For sequences in a full_results file, determines if they are TP, FP, FN, TN. If they are TP, the differecne between primary and secondary scores is calculated. If they are FP or FN, the difference is calculcated. Normal distributions generated to compare the scores.
+ 
  
  
  
