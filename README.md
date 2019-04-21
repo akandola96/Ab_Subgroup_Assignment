@@ -1,6 +1,6 @@
 # Antibody Subgroup Assignment
 
-This repository contains the code created for my MSci Biochemistry project at UCL. Created with Andrew Martin. 
+This repository contains the code created for my MSci Biochemistry project at UCL. 
 
 Core analysis code consists of data_extraction.py, blast.py, derive_profiles.py, and core_analysis.py. For each distinct organism each of these scripts were repeated. 
 
@@ -8,7 +8,7 @@ Core analysis code consists of data_extraction.py, blast.py, derive_profiles.py,
 
 ## Data Extraction 
 
-### Aims to extract raw data from abysis, culminating in a FASTA formatted file containing sequences to be analysed
+### Aims to extract raw data from abysis, culminating in a FASTA formatted file containing sequences to be analysed.
 
 The **xml_parser** function is responsible for extracting sequence data from raw abYsis files. It checks each record within the 
 *input_file* provided and extracts all records that belong to the *query_organism*. The *output_file* is a CSV file with entries stored in a vertical format, shown below. The first column contains the residue itself; the second column, the number of this residue within the entire sequence; the third column the Chothia (or Kabat when Chothia is unavailable) numbering of this residue. 
@@ -26,7 +26,7 @@ L|5|H3|
 |*|*|*|
 
 The **count_abysis** function takes the output of the **xml_parser** function as it's *in_file* and determines how many records were 
-extracted by counting the number of '>' characters it finds. 
+extracted by counting the number of '>' characters it finds. Non-essential function used for figures and quality assurance.
 
 The **original_make_fasta** takes the output of the **xml_parser** function as its input and converts ALL sequences into FASTA formatted 
 sequences. It outputs a FASTA formatted file. 
@@ -40,6 +40,7 @@ spaces from the input file. This is to prevent inconsistencies in either the seq
 The **remove_short_sequences** function takes the output of **remove_spaces** and removes FASTA sequences of less than 21 residues. Outputs to a new file. 
 
 The **seqkit_clean** function takes a FASTA formatted file and removes duplicate sequences by both ID and sequence. The *os* variable is provided to distinguish between Linux and Windows operating systems. The function runs a commmand line process utilisng the SeqKit library. 
+SeqKit is available for download at: https://bioinf.shenwei.me/seqkit/download/. Alternatively, the GitHub repo can be found at: https://github.com/shenwei356/seqkit.
 
 The **convert_seqkit** function takes the output of **seqkit_clean** as an input. After running SeqKit the FASTA file will be formatted in a manner that is difficult to manually look at. This function simply re-formats the file so it can be viewed manually and understood. 
 
@@ -47,15 +48,15 @@ The **count_num_queries** function simply counts the number of FASTA sequences p
 
 ## BLAST
 
-### Runs BLAST on all query sequences. Culminates in a csv file that contains Query ID, Alignment Description, and 21 N-terminal query sequence residues for each query sequence.
+### Runs tBLASTn on all query sequences utilising IMGT reference data. This functions within this code culminate in a csv file that contains Query ID, Alignment Description, and the N-terminal 21 residues of each query sequence.
 
 The **extract_ref_data** function is used to extract reference query data from a FASTA formatted file. In the case of this project, this data derives from the IMGT. *Organism* represents the name of the query organism, this must be as found in IMGT data. *Region* refers to V, D, J or C genes; in this project, V-region genes were exclusively used. The function extracts relevant reference sequences, provided they are functional genes.
 
 **make_ref_blastdb** utilises the data produced from **extract_ref_date** to construct a BLAST+ database. Database created via a command line process. *-dbtype nucl* specifies that this is a nucleotide database. The reference database should be named something like m_musculus_ref_db. Six files will be produced from this step, all of which contribute to the BLAST database.
 
-**tBLASTn_full** carries out a commmand line process to run tBLASTn. The *queries* input variable should be a FASTA formatted file containg query sequences (derived from the **Data Extraction** steps). The database produced by **make_ref_blastdb** is provided to the functionv via the *db* variable (take care not to specify any single database file but rather all of them instead db e.g. m_musculus_ref_db rather than m_musculus_ref_db.nin). *-outfmt 5* refers to the output format of this function (XML). The alignments in the XML file are ordered by E-value, with the best E-value being the first alignment within a record. the *soft_masking false* argument is passed to turn off low complexity filtering. 
+**tBLASTn_full** carries out a commmand line process to run tBLASTn. The *queries* input variable should be a FASTA formatted file containg query sequences (derived from the **Data Extraction** steps). The database produced by **make_ref_blastdb** is provided to the functionv via the *db* variable (take care not to specify any single database file but rather all of them instead db e.g. m_musculus_ref_db rather than m_musculus_ref_db.nin). *-outfmt 5* refers to the output format of this function (XML). The alignments in the XML file are ordered by E-value, with the best E-value being the first alignment within a record. The arguments *soft_masking false* and *-seg no* are passed to turn off low complexity filtering. The output of this function is very large (10s of GB for Mouse or Human)
 
-The **count_xml_blast_records** function  counts the number of BLAST records produced. This number should agree with the number of sequences counted by the **count_num_queries** function, and is used to check that each query sequence has a corresponding BLAST record.
+The **count_xml_blast_records** function  counts the number of BLAST records produced. This number should agree with the number of sequences counted by the **count_num_queries** function, and is used to check that each query sequence has a corresponding BLAST record. The NCBIXML parser is utilised in this function.
 
 **blast_output_xml2csv** converts the output of **tBLASTn_full** from XML to CSV. Extracts only the top alignment (by E-value) for each BLAST record. The query ID and alignment description are outputted to a new CSV file, format of which shown below:
 
@@ -64,9 +65,11 @@ The **count_xml_blast_records** function  counts the number of BLAST records pro
 |Anti-A\00001|refseq5115\mus musculus\IGHV1-21*04|
 |Anti-B\00501|refseq3113\mus musculus\IGKV1-39*02|
 
-**convert_queries2csv** converts FASTA formatted query sequences into a csv file, extracting only the first 21 residues of each sequence. This CSV file is then joined to the BLAST output CSV file to create the blout_queries file. 
+The NCBIXML parser is utilised in this function.
 
-**join_queries2blout**: Attaches query sequence residues to the output of the file produced by **blast_output_xml2csv**. Resultant file is of the format shown below. Query sequence residues up to the 21st residue only are included. This file is referred to as the **blout_queries** for the remainder of this ReadMe
+**convert_queries2csv** converts FASTA formatted query sequences into a csv file, extracting only the first 21 residues of each sequence. This CSV file is then joined to the BLAST output CSV file to create the *blout_queries* file. 
+
+**join_queries2blout**: Attaches query sequence residues to the output of the file produced by **blast_output_xml2csv**. Resultant file is of the format shown below. Query sequence residues up to the 21st residue only are included. This file is referred to as the **blout_queries** for the remainder of this ReadMe.
 
 |Query ID|Alignment Description|Query Sequence Residues|
 |-----|-----|-----|
@@ -88,12 +91,17 @@ This dictionary is required to manage the difference in outputs of BLAST (which 
 **get_sentences**. Converts the 'numeric' subgroup codes derived from the **get_numerics** function into sentences e.g. 'IGHV1' to 'Mus musculus Heavy Chain 1'.
 
 **get_numerics**: Root of all subgroup profile derivation functions. BLAST alignment description contains subgroup info in the form of IGHV1, IGHV2 etc. **get_numerics** creates strings e.g. IGHV1, IGHV2, IGHV3, IGHV4 ... IGHV30 and determines whether this string can be found in any of the BLAST alignment descriptions. If it is found, this subgroup is added to a list of confirmed subgroups. *in_file* is the **blout queries file** shown above. 
+O. cuniculus and O. mykiss subgroups are all labelled as intrasubgroup subgroups e.g. IGHV1S1. This function handles this in the following manner: 
+    If the *organism* variable is O. mykiss or O. cuniculus, for each subgroup string evaluated (e.g. IGHV1, IGHV2) a a *sub_query*
+    variable is built e.g. IGHV1S. If the *sub_query* variable can be found in any of the BLAST records, then the main query is added to 
+    the numeric list. E.g. if 'IGHV1S' is found, 'IGHV1' is added to the numeric list. This maintains consistency of subgroup
+    nomenclature.
 
-**get_profiles**: Master function to generate subgroup profiles. Must be run for each distinct chain e.g. Kappa, Lambda or Heavy ; this is done by changing the *locus* variable. *in_file* is the blout_queries file produced by earlier steps. *freq_type* can be 'log' or 'normal' and dictates whether the frequency of the residues in a profile should be count/number of sequences or log((count/number of sequences) + 1.003). 1.003 is present to ensure that ordinary frequencies are converted to non-zero numbers, log(1.003) = 0.001, which is the lowest possible value that can be stored as a frequency in the profiles. *matrix_type* can be 'full' or '2line'. This function calls one of two functions depending on the *matrix_type* variable, detailed below. 
+**get_profiles**: Master function to generate subgroup profiles. Must be run for each distinct chain e.g. Kappa, Lambda or Heavy ; this is done by changing the *locus* variable. *in_file* is the blout_queries file produced by earlier steps. *freq_type* can be 'log' or 'normal' and dictates whether the frequency of the residues in a profile should be count/number of sequences or log((count/number of sequences) + 1). *matrix_type* can be 'full' or '2line'. This function calls one of two functions depending on the *matrix_type* variable, detailed below. 
   
- **derive_profiles_2line**:generates a 2line profile for a subgroup (1st and 2nd most common residues only). For each row in the blout_queries file, if the record alignment is found to contain the subgroup in question, the query residues are added to distinct lists. The first residue is added to the list pos1, the second residue to the list pos2, the third residue to the list pos3 and so on. From each of these lists the most commonly occuring (and the second most commonly occuring residues) are calculated as well as their frequencies. Passing *freq_type* as 'log' modifies the frequency such that f1 = log(f0 + 1.003), where f0 is the original frequency and f1 is the new frequency. 
+ **derive_profiles_2line**:generates a 2line profile for a subgroup (1st and 2nd most common residues only). For each row in the blout_queries file, if the record alignment is found to contain the subgroup in question, the query residues are added to distinct lists. The first residue is added to list 1 , the second residue to the list 2, the third residue to the list 3 and so on. These lists can be visualised as 'columns', each containing the residue each sequence presents at that specific position. From each of these lists the most commonly occuring (and the second most commonly occuring residues) are calculated as well as their frequencies. Once the most common residue has been calculated, a lambda function removes this residue from the list and the next most commonly occuring residue is counted. Before the number of residues/sequene entries within a list is calculated by len(list) X's are removed from the list. Passing *freq_type* as 'log' modifies the frequency such that f1 = log(f0 + 1), where f0 is the original frequency and f1 is the new frequency. 
   
-  **derive_profiles_full**: generates a full profile for a subgroup (frequency of every residue at every position). For each row in the blout_queries file, if the record alignment is found to contain the subgroup in question the query residues are added to distinct list. The first residue is added to the list pos1, the second residue to the list pos2, the third residue to the list pos3 and so on. From these lists, the frequency of every residue at every position is calculated. 
+  **derive_profiles_full**: generates a full profile for a subgroup (frequency of every residue at every position). For each row in the blout_queries file, if the record alignment is found to contain the subgroup in question the query residues are added to distinct list. The first residue is added to the list 1, the second residue to the list 2, the third residue to the list 3 and so on. From these lists, the frequency of every residue at every position is calculated. 
   
   ## Core Analysis
   
@@ -110,7 +118,7 @@ This dictionary is required to manage the difference in outputs of BLAST (which 
   
   This is referred to as the *scores_file*
   
- **attach_scores_to_queries**. As hsubgroup does not include SeqID information, it must be attached to the scores by means of this function. This function uses the FASTA formatted queries and the *scores_file* produced by **run_hsubgroup** file to write to a .csv file of the format shown below:
+ **attach_scores_to_queries**. As hsubgroup does not include SeqID information, this information must be attached to the scores by means of this function. This function uses the FASTA formatted queries and the *scores_file* produced by **run_hsubgroup** to write to a .csv file of the format shown below:
   
   |SeqID|Primary subgroup assignment|Score|Secondary subgroup assignment|Score2|
   |----|----|----|----|----|
@@ -133,7 +141,7 @@ This dictionary is required to manage the difference in outputs of BLAST (which 
 
  ## Misclassified Analysis 
 
- ### Determines misclassified sequences for a given subgroup (FN or FP, user defined). Output files contain FASTA formatted sequences to be opened in JalView for alignment with MUSCLE and subsequent construction of phylogenetic trees.
+ ### Determines misclassified sequences for a given subgroup (FN or FP, user defined). Output files contain FASTA formatted sequences to be opened in JalView for alignment with MUSCLE and subsequent construction of phylogenetic trees in Mesquite (or other).
 
  **extract_misclassified_subgroup**: For a given subgroup, extracts misclassifed sequences and outputs them to a FASTA file. Actual subgroup assignment is outputted to console (provided user passes *pull_assignment* as *true*. FN or FP can be selected by the *misclassified_type* variable.
  
@@ -145,7 +153,7 @@ This dictionary is required to manage the difference in outputs of BLAST (which 
  
  ### Determines the MCC for each species. Also carries out some analysis into the misclassified sequences. 
  
- The input for these steps is produced in the following manner. All subgroup profiles are combined into one file, using command line 'cat'. These are provided to hsubgroup. The query sequences for a given species are run in hsubgroup using the combined files. These are matched to their corresponding BLAST records and for each species a *final_results.csv* is created. These *final_results* files are then combined. This produces an file containing all possible query sequences, their hsubgroup assignment, and their BLAST assignment. 
+ The input for these steps is produced in the following manner. All subgroup profiles are combined into one file, using command line 'cat'. These are provided to hsubgroup. The query sequences for a given species are run in hsubgroup using the combined data file. These are matched to their corresponding BLAST records and for each species a *final_results.csv* is created. These *final_results* files are then combined using 'cat' on the command line. This produces a file containing all possible query sequences, their hsubgroup assignment, and their BLAST assignment. 
  
  **check_species_assignment**: For the 5 species examined in this research, the MCC is calculated. This  function takes the combined *full_results* file discussed above as input and outputs a .txt file containing results. 
  
