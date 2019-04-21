@@ -135,4 +135,24 @@ This dictionary is required to manage the difference in outputs of BLAST (which 
 
  ### Determines misclassified sequences for a given subgroup (FN or FP, user defined). Output files contain FASTA formatted sequences to be opened in JalView for alignment with MUSCLE and subsequent construction of phylogenetic trees.
 
- **extract_misclassified_subgroup**: For a given subgroup, extracts misclassifed sequences; outputs to a FASTA file. Actual subgroup assignment is outputted to console (provided user passes *pull_assignment* as *true*. FN or FP can be selected by the *misclassified_type* variable.
+ **extract_misclassified_subgroup**: For a given subgroup, extracts misclassifed sequences and outputs them to a FASTA file. Actual subgroup assignment is outputted to console (provided user passes *pull_assignment* as *true*. FN or FP can be selected by the *misclassified_type* variable.
+ 
+ **extract_first_21_residues**: Used for construction of phylogenetic trees. Takes the output FASTA file of **extract_misclassified** subgroups and extracts the first 21 residues of each sequences. Outputs to a new FASTA file
+ 
+ **extract_random_TPs**: Used in phylognetic tree construction. For a given subgroup, determines all True Positive entries (does not include intrasubgroup subgroups). From these true positive entries a random number are selected, defined by the variable *number*.
+ 
+ ## Species Analysis 
+ 
+ ### Determines the MCC for each species. Also carries out some analysis into the misclassified sequences. 
+ 
+ The input for these steps is produced in the following manner. All subgroup profiles are combined into one file, using command line 'cat'. These are provided to hsubgroup. The query sequences for a given species are run in hsubgroup using the combined files. These are matched to their corresponding BLAST records and for each species a *final_results.csv* is created. These *final_results* files are then combined. This produces an file containing all possible query sequences, their hsubgroup assignment, and their BLAST assignment. 
+ 
+ **check_species_assignment**: For the 5 species examined in this research, the MCC is calculated. This  function takes the combined *full_results* file discussed above as input and outputs a .txt file containing results. 
+ 
+ **determine_species_misassignment_master**: Runs functions analysing misclassified sequences in the context of species analysis. Runs these functions for all organisms evaluated.
+ 
+ **determine_species_misassignment_FNs**: For a given organism, determines FNs. Outputs to console. 
+ 
+ **determine_species_misassignment_FPs**: For a given organism, determines FPs. Outputs to console. 
+ 
+ 
