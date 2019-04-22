@@ -66,3 +66,8 @@ The result of these steps is the *blout_queries* file, the format of which can b
 -Joins hsubgroup scores to query sequence IDs --> known as the seq_scores file  
 -Joins seqs_scores file to blout_queries file  --> known as the final_results file  
 -Checks assignment  
+
+
+
+#### The results of running these commands can be seen in the 'example' folder. The BLAST output (.xml) was deleted due to the size of the file. 
+#### Note that IGLV5 does not have an MCC value associated due to division by 0. This occurs as the single sequence that was assigned to IGLV5 by tBLASTn was not assigned to IGLV5 by hsubgroup (results in zeroes in the denominator)
