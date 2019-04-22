@@ -120,13 +120,19 @@ def difference_in_scores(in_file,blout_queries_file,organism):
         
         # Norm dist for correct
         x = np.linspace(correct_mu - 3*correct_sigma, correct_mu +3*correct_sigma,100)
-        plt.plot(x,scipy.stats.norm.pdf(x,correct_mu,correct_sigma),linewidth=3.5, label = 'Correct',color = 'Red')
+        plt.plot(x,scipy.stats.norm.pdf(x,correct_mu,correct_sigma),linewidth=4.5, label = 'Correct',color = 'Red')
         # Norm dist for incorrect
         z = np.linspace(incorrect_mu - 3*incorrect_sigma, incorrect_mu + 3*incorrect_sigma,100)
-        plt.plot(z,scipy.stats.norm.pdf(z,incorrect_mu,incorrect_sigma),linewidth = 3.5,label = 'Incorrect',color = 'Blue')
+        plt.plot(z,scipy.stats.norm.pdf(z,incorrect_mu,incorrect_sigma),linewidth = 4.5,label = 'Incorrect',color = 'Blue')
         
         # Formatting
-        plt.xticks(fontsize = 24)
-        plt.yticks(fontsize = 24)
+        font = {'fontname':'Times New Roman'}
+        
+        plt.xticks(fontsize = 52,**font)
+        plt.yticks(fontsize = 52,**font)
+        plt.xlabel('Difference Between Scores',fontsize = 52,**font)
+        plt.ylabel('Probability Density',fontsize = 52,**font)
+        plt.grid(which='major',axis='both')
+        
         plt.show
     
