@@ -334,7 +334,7 @@ def count_num_queries(in_file):
 def tidy_up():
     """Deletes redundant files"""
     import os
-    os.remove('raw_queries_a.fasta')
     os.remove('raw_queries_b.fasta')
-    os.remove('raw_queries_c.fasta')    
+    os.remove('raw_queries_c.fasta') 
+    os.remove('raw_queries_d.fasta')
                         
