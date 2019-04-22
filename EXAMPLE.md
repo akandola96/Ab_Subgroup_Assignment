@@ -58,7 +58,7 @@ The result of these steps is the *blout_queries* file, the format of which can b
 
 ### core_analysis.py
 
-12) Run the *fasta2pir* function to convert queries into hsubgroup compatible form: `fasta2pir('queries.fasta','PIR_queries.fasta')`  
+12) Run the *fasta2pir* function to convert queries into hsubgroup compatible form: `fasta2pir('queries.fasta','PIR_queries.pir')`  
 
 13) Run *run_hsubgroup* to score input sequences: `run_hsubgroup('PIR_queries.pir','profiles.txt','2line','hsub_scores.csv')`    
 
