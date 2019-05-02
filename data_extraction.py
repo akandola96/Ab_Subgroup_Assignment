@@ -43,7 +43,10 @@ def xml_parser(input_file,query_organism,output_file_name):
                         organism = chain.find('organism').text
                         if organism in query_organism:  # Write ID and acc                     
                             name = name.replace(',','') 
+                            sys.stdout.write('>' + ',' + name + ',' 
+                                             + accession + '\n')
                             
+                            # Residues for-loop
                             for residue in chain.iter('residue'):
                                 aa = residue.attrib['aa']
                                 pos = residue.attrib['pos']
@@ -57,30 +60,32 @@ def xml_parser(input_file,query_organism,output_file_name):
                                                      + kabat + '\n') 
                                 else:
                                     continue                                    
-                            sys.stdout.write('*' + ',' + '*' +',' + '*' + '\n')
-            
-            
+                            sys.stdout.write('*' + ',' + '*' +',' + '*' + '\n') 
             # Will rewrite in later release to avoid code duplication
             elif not warning_present:                   # If no warning present
-                accession = chain.find('accession').text 
+                accession = chain.find('accession').text
                 name = chain.find('name').text
                 organism = chain.find('organism').text
-                if organism in query_organism:  # Write ID and acc                     
-                    name = name.replace(',','') 
+                
+                if organism in query_organism:
+                    name = name.replace(',','')
+                    sys.stdout.write('>' + ',' + name + ',' 
+                                     + accession + '\n')
+                    
+                    # Residues for loop
                     for residue in chain.iter('residue'):
                         aa = residue.attrib['aa']
                         pos = residue.attrib['pos']
-                        if 'chothia' in residue.attrib:    
+                        if 'chothia' in residue.attrib:     
                             chothia = residue.attrib['chothia']
                             sys.stdout.write(aa+','+pos+','
                                              + chothia + '\n')
-                        elif 'kabat' in residue.attrib:      
+                        elif 'kabat' in residue.attrib:     
                             kabat = residue.attrib['kabat']                                
-                            sys.stdout.write(aa+','+ pos +',' 
-                                             + kabat + '\n') 
+                            sys.stdout.write(aa+','+pos+','+kabat + '\n') 
                         else:
-                            continue                                    
-                    sys.stdout.write('*' + ',' + '*' +',' + '*' + '\n')
+                            continue                            
+                    sys.stdout.write('*' +',' + '*' +',' + '*' + '\n')
                 
 def count_abysis(in_file):
     """Counts number of records extracted from abYsis into csv file"""
