@@ -1,6 +1,5 @@
 #%%
 def xml_parser(input_file,query_organism,output_file_name):
-    #this is a test
     """
     Summary:
     Extracts raw sequence data from abysis.
