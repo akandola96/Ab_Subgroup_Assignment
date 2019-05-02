@@ -74,7 +74,7 @@ def xml_parser(input_file,query_organism,output_file_name):
                     sys.stdout.write('>' + ',' + name + ',' 
                                      + accession + '\n')
                     
-                    #residue for loop
+                    # Residues for loop
                     for residue in chain.iter('residue'):
                         aa = residue.attrib['aa']
                         pos = residue.attrib['pos']
