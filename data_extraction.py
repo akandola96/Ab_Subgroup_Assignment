@@ -147,7 +147,7 @@ def make_fasta(input_file,version,output_file_name):
     for row in csv_f:     
         if row[0] == '>':               # Finds start of a sequence
             count = 0 
-            # Writes > ID | accession
+            # Writes '> ID | accession'
             sys.stdout.write('\n' + row[0] + row[1] + '|' + row[2] + '\n') 
     
             # Nested for loop determines if sequence should be kept
