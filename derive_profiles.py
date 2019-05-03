@@ -294,20 +294,16 @@ def derive_profiles_2line(in_file, query_subgroup,freq_type,out_file):
             # Calculate second most common residue + frequency
             # If the primary mode is not invariant 
             if freq_mode != 1:      
-                if len(list(set(i))) > 1:           # If other residues present
-                    i = list(filter(lambda a:a != mode,i)) # Remove primary mode                               
-                    mode2 = max(set(i), key= i.count)    # Get 2nd
-                elif len(list(set(i))) < 2:         # If no other residues present
-                    mode2 = mode 
-                        
-                freq_mode2 = i.count(mode2)/list_length  # Calc 2nd mode freq
+                i = list(filter(lambda a:a != mode,i))  # Remove primary mode                               
+                mode2 = max(set(i), key= i.count)       # Get 2nd
+                freq_mode2 = i.count(mode2)/list_length # Calc 2nd mode freq
              
             # If primary mode is invariant 
             elif freq_mode == 1: 
                 mode2 = mode
                 freq_mode2 = freq_mode
             
-            
+        
             # Perform logs after
             if freq_type == 'log':
                 freq_mode +=1
@@ -407,3 +403,57 @@ def derive_profiles_full(in_file, query_subgroup,freq_type,out_file):
                 value = l[amino_counter]            #get res freq 
                 sys.stdout.write(value + ' ')            
             sys.stdout.write('\n')  
+#%%
+def new_function(in_file, query_subgroup,freq_type,out_file):
+    import csv  
+    import sys
+    import math
+    sys.stdout = open(out_file, 'a+')
+    with open(in_file,'r') as cinput:
+        reader = csv.reader(cinput)
+        
+        # Creates  lists
+        N = 21
+        list_names = [[] for i in range(N)]
+        
+        intra_subgroups = query_subgroup + 'S'
+        
+        # Populate lists  
+        for row in reader:
+            subgroup = str(row[1])
+            
+            # If subgroup is present in blast record
+            if phrases(query_subgroup,subgroup) is True \
+            or intra_subgroups in subgroup:
+                x = 0
+                
+                # Res1 to list 1, res2 to list 2 ... res21 to list 21
+                for position_list in list_names:
+                    residues = list(row[2])               # Gets seq
+                    position_list.append(residues[x])     
+                    x+=1                     
+     # Get profiles 
+        counter = 0 
+        all_pos_freqs = []
+        for position in list_names:
+            counter += 1
+            position = [x for x in position if x != 'X'] # Remove x's
+            length = len(position)                       # How many res?
+            aminos = ['A','C','D','E','F','G','H','I','K','L','M','N',
+                      'P','Q','R','S','T','V','W','Y','X']
+            amino_pos_freqs = []
+            for amino in aminos:
+                amino_freq = position.count(amino)/length
+                amino_pos_freqs.append(freq)
+            all_pos_freqs.append(amino_pos_freqs)
+        sys.stdout.write('\n')
+        amino_counter = -1
+        for amino in aminos:
+            amino_counter+=1
+            sys.stdout.write(amino + ' ') 
+            for amino_pos_freq in all_pos_freqs:
+                value = amino_pos_freq[amino_counter]
+                
+                
+    
+            
