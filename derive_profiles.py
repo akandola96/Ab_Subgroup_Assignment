@@ -404,56 +404,80 @@ def derive_profiles_full(in_file, query_subgroup,freq_type,out_file):
                 sys.stdout.write(value + ' ')            
             sys.stdout.write('\n')  
 #%%
-def new_function(in_file, query_subgroup,freq_type,out_file):
-    import csv  
-    import sys
-    import math
-    sys.stdout = open(out_file, 'a+')
-    with open(in_file,'r') as cinput:
-        reader = csv.reader(cinput)
-        
-        # Creates  lists
-        N = 21
-        list_names = [[] for i in range(N)]
-        
-        intra_subgroups = query_subgroup + 'S'
-        
-        # Populate lists  
-        for row in reader:
-            subgroup = str(row[1])
             
-            # If subgroup is present in blast record
-            if phrases(query_subgroup,subgroup) is True \
-            or intra_subgroups in subgroup:
-                x = 0
-                
-                # Res1 to list 1, res2 to list 2 ... res21 to list 21
-                for position_list in list_names:
-                    residues = list(row[2])               # Gets seq
-                    position_list.append(residues[x])     
-                    x+=1                     
-     # Get profiles 
-        counter = 0 
-        all_pos_freqs = []
-        for position in list_names:
-            counter += 1
-            position = [x for x in position if x != 'X'] # Remove x's
-            length = len(position)                       # How many res?
-            aminos = ['A','C','D','E','F','G','H','I','K','L','M','N',
-                      'P','Q','R','S','T','V','W','Y','X']
-            amino_pos_freqs = []
-            for amino in aminos:
-                amino_freq = position.count(amino)/length
-                amino_pos_freqs.append(freq)
-            all_pos_freqs.append(amino_pos_freqs)
-        sys.stdout.write('\n')
-        amino_counter = -1
+def phrases(phrase,text):
+    """
+    Summary:
+    Alternative to using 'in', which is non-specific.
+    
+    Args:
+    phrase = text to find (str)
+    text = text to search in (str)
+    
+    Desc:    
+    Returns true if EXACT match between strings is found, false oteherwise. 
+    Case insensitive.
+    Can differentiate between IGHV1 and IGHV10, which 'in' cannot.
+    """    
+    import re
+    return re.search(r"\b{}\b".format(phrase), text, re.IGNORECASE) is not None
+
+            
+
+
+in_file = 't6_musculus_blout_queries.csv'
+query_subgroup = 'IGHV1'
+import numpy as np
+import csv  
+with open(in_file,'r') as cinput:
+    reader = csv.reader(cinput)
+    
+    # Creates  lists
+    N = 21
+    list_names = [[] for i in range(N)]
+    
+    intra_subgroups = query_subgroup + 'S'
+    
+    # Populate lists  
+    for row in reader:
+        subgroup = str(row[1])
+        
+        # If subgroup is present in blast record
+        if phrases(query_subgroup,subgroup) is True \
+        or intra_subgroups in subgroup:
+            x = 0
+            
+            # Res1 to list 1, res2 to list 2 ... res21 to list 21
+            for position_list in list_names:
+                residues = list(row[2])               # Gets seq
+                position_list.append(residues[x])     
+                x+=1                     
+ # Get profiles 
+    counter = 0 
+    profile_list_of_lists = []
+    for position in list_names:
+        counter += 1
+        position = [x for x in position if x != 'X'] # Remove x's
+        length = len(position)                       # How many res?
+        aminos = ['A','C','D','E','F','G','H','I','K','L','M','N',
+                  'P','Q','R','S','T','V','W','Y','X']
+        amino_pos_freqs = []
         for amino in aminos:
-            amino_counter+=1
-            sys.stdout.write(amino + ' ') 
-            for amino_pos_freq in all_pos_freqs:
-                value = amino_pos_freq[amino_counter]
-                
-                
+            amino_freq = position.count(amino)/length
+            amino_pos_freqs.append(amino_freq)
+        profile_list_of_lists.append(amino_pos_freqs)
+        profile_array = np.column_stack((profile_list_of_lists))
+        
+    
+    for column in profile_array.T:
+        highest = column.max()
+        print(highest)
+        
+        
+#    xmax = profile_array.max(axis=0)
+#    print(xmax)
     
             
+            
+
+        
