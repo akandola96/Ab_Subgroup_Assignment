@@ -427,6 +427,7 @@ def phrases(phrase,text):
 
 in_file = 't6_musculus_blout_queries.csv'
 query_subgroup = 'IGHV1'
+profile_type = 'full'
 import numpy as np
 import csv  
 with open(in_file,'r') as cinput:
@@ -452,32 +453,65 @@ with open(in_file,'r') as cinput:
                 residues = list(row[2])               # Gets seq
                 position_list.append(residues[x])     
                 x+=1                     
- # Get profiles 
+ # Get profile 
     counter = 0 
     profile_list_of_lists = []
     for position in list_names:
         counter += 1
         position = [x for x in position if x != 'X'] # Remove x's
         length = len(position)                       # How many res?
-        aminos = ['A','C','D','E','F','G','H','I','K','L','M','N',
-                  'P','Q','R','S','T','V','W','Y','X']
+        
+        aminos_dict = {0:'A',1:'C',2:'D',3:'E',4:'F',5:'G',6:'H',7:'I',8:'K',9:'L',10:'M',11:'N',12:'P',13:'Q',14:'R',15:'S',16:'T',17:'V',18:'W',19:'Y',20:'X'}
         amino_pos_freqs = []
-        for amino in aminos:
-            amino_freq = position.count(amino)/length
+        for amino in aminos_dict:
+            amino_value = aminos_dict[amino]
+            amino_freq = position.count(amino_value)/length
             amino_pos_freqs.append(amino_freq)
         profile_list_of_lists.append(amino_pos_freqs)
         profile_array = np.column_stack((profile_list_of_lists))
         
+ 
+  # Write profile
+    if profile_type is '2line':
+        primary_residues = []
+        frequencies = []
+        for column in profile_array.T:
+            column = list(column)
+            frequency = max(column)
+            index = column.index(frequency)
+            residue = aminos_dict[index]
+            
+            primary_residues.append(residue)
+            frequencies.append(frequency)
     
-    for column in profile_array.T:
-        highest = column.max()
-        print(highest)
         
         
-#    xmax = profile_array.max(axis=0)
-#    print(xmax)
-    
+        print(primary_residues)
+        print(frequencies)
+        
+    elif profile_type is 'full':
+        for amino,row in zip(aminos_dict,profile_array):
+            amino_value = aminos_dict[amino]
+            print(amino_value,row)
             
-            
+        
+        #%%
+for residue in amino_dict:
+    y = amino_dict[residue]
+    print(y)
+        
+#%%
+l = {'A':1,'B':2}        
 
+for x in l:
+    y = l[x]
+    print(y)
+
+
+#%%
+
+aminos = {'A':1,'C':2,'D':3,'E':4,'F':5,'G':6,'H':7,'I':8,'K':9,'L':10,
+                  'M':11,'N':12,'P':13,'Q':14,'R':15,'S':16,'T':17,'V':18,
+                  'W':19,'Y':20,'X':21}S
+    
         
