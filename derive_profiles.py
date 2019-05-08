@@ -15,7 +15,7 @@ def master_derive_profiles(query_organism,freq_type, matrix_type):
         get_profiles(locus, 'blout_queries.csv', 'profiles.txt',query_organism,freq_type,matrix_type)
     
 
-
+#%%
 def phrases(phrase,text):
     """
     Summary:
@@ -32,6 +32,7 @@ def phrases(phrase,text):
     """    
     import re
     return re.search(r"\b{}\b".format(phrase), text, re.IGNORECASE) is not None
+#%%
 
 def determine_subgroups(in_file,organism):
     """
@@ -201,9 +202,11 @@ def get_profiles(locus, infile, out_file,query_organism,freq_type,matrix_type):
             
             # Get profiles
             if matrix_type == '2line':
-                derive_profiles_2line(infile,subgroup,freq_type,out_file)
+                full_deriver(infile,subgroup,matrix_type)
+                
+                
             elif matrix_type == 'full':
-                derive_profiles_full(infile,subgroup,freq_type,out_file)
+                full_deriver(infile,subgroup,matrix_type)
             
             # Write terminator
             sys.stdout.write('//' + '\n')
@@ -422,12 +425,108 @@ def phrases(phrase,text):
     import re
     return re.search(r"\b{}\b".format(phrase), text, re.IGNORECASE) is not None
 
+def full_deriver(in_file, query_subgroup, profile_type):
+    import numpy as np
+    import csv  
+    import sys
+    with open(in_file,'r') as cinput:
+        reader = csv.reader(cinput)
+        
+        # Creates  lists
+        N = 21
+        list_names = [[] for i in range(N)]
+        
+        intra_subgroups = query_subgroup + 'S'
+        
+        # Populate lists  
+        for row in reader:
+            subgroup = str(row[1])
+            
+            # If subgroup is present in blast record
+            if phrases(query_subgroup,subgroup) is True \
+            or intra_subgroups in subgroup:
+                x = 0
+                
+                # Res1 to list 1, res2 to list 2 ... res21 to list 21
+                for position_list in list_names:
+                    residues = list(row[2])               # Gets seq
+                    position_list.append(residues[x])     
+                    x+=1                     
+     # Get profile 
+        counter = 0 
+        profile_list_of_lists = []
+        for position in list_names:
+            counter += 1
+            position = [x for x in position if x != 'X'] # Remove x's
+            length = len(position)                       # How many res?
+            
+            aminos_dict = {0:'A',1:'C',2:'D',3:'E',4:'F',5:'G',6:'H',7:'I',8:'K',9:'L',10:'M',11:'N',12:'P',13:'Q',14:'R',15:'S',16:'T',17:'V',18:'W',19:'Y',20:'X'}
+            amino_pos_freqs = []
+            for amino in aminos_dict:
+                amino_value = aminos_dict[amino]
+                amino_freq = position.count(amino_value)/length
+                amino_pos_freqs.append(amino_freq)
+            profile_list_of_lists.append(amino_pos_freqs)
+            profile_array = np.column_stack((profile_list_of_lists))
+            
+     
+      # 2 line profile
+        if profile_type == '2line':
+            primary_residues = []
+            secondary_residues = []
+            frequencies = []
+            secondary_frequencies = []
+            for column in profile_array.T:
+                column = list(column)
+                highest_frequency = max(column)
+                index = column.index(highest_frequency)
+                residue = aminos_dict[index]
+                
+                primary_residues.append(residue)
+                frequencies.append(highest_frequency)
+                
+                for n,i in enumerate(column):
+                    if i == highest_frequency and highest_frequency != 1:
+                        column[n] = 0 
+                        second_highest_frequency = max(column)
+                        index2 = column.index(second_highest_frequency)
+                        residue2 = aminos_dict[index2]
+                        
+                        secondary_residues.append(residue2)
+                        secondary_frequencies.append(second_highest_frequency)
+                    elif i == highest_frequency and highest_frequency == 1:
+                        secondary_residues.append(residue)
+                        secondary_frequencies.append(highest_frequency)
+                    
+                        
+            
+            frequencies = ['%.3f' % x for x in frequencies]
+            secondary_frequencies = ['%.3f' % x for x in secondary_frequencies]
+            
+            sys.stdout.write('\n'+"".join(primary_residues) + ',' + '\n') 
+            sys.stdout.write(",".join(str(x) for x in frequencies) + ',' +'\n')
+            
+            sys.stdout.write("".join(secondary_residues) + ',' + '\n') 
+            sys.stdout.write(",".join(str(x) for x in secondary_frequencies) +'\n')
+            
+        # Full profile         
+        elif profile_type == 'full':
+            for amino,row in zip(aminos_dict,profile_array):
+                amino_value = aminos_dict[amino]
+                row = list(row)
+                row = ['%.3f' % x for x in row]
+                sys.stdout.write(" ".join(row))
+                
+                sys.stdout.write( '\n' + amino_value +' '  + "".join(row))
+            
 
-in_file = 't6_musculus_blout_queries.csv'
-query_subgroup = 'IGHV1'
-profile_type = 'full'
+#%%
+in_file = 't6_musculus_blout_queries.csv'                
+profile_type = '2line'
+query_subgroup = 'IGHV13'
 import numpy as np
 import csv  
+import sys
 with open(in_file,'r') as cinput:
     reader = csv.reader(cinput)
     
@@ -469,7 +568,7 @@ with open(in_file,'r') as cinput:
         profile_array = np.column_stack((profile_list_of_lists))
         
  
-  # Write profile
+  # 2 line profile
     if profile_type == '2line':
         primary_residues = []
         secondary_residues = []
@@ -484,61 +583,66 @@ with open(in_file,'r') as cinput:
             primary_residues.append(residue)
             frequencies.append(highest_frequency)
             
-            for n,i in enumerate(column):
-                if i == highest_frequency and highest_frequency != 1:
-                    column[n] = 0 
-                    second_highest_frequency = max(column)
-                    index2 = column.index(second_highest_frequency)
-                    residue2 = aminos_dict[index2]
-                    
-                    secondary_residues.append(residue2)
-                    secondary_frequencies.append(second_highest_frequency)
-                elif i == highest_frequency and highest_frequency == 1:
-                    secondary_residues.append(residue)
-                    secondary_frequencies.append(highest_frequency)
-                
-                    
             
-        print(primary_residues)
-        print(frequencies)
-        print(secondary_residues)
-        print(secondary_frequencies)
-     
+            if highest_frequency !=1:
+                for n,i in enumerate(column):
+                    if i == highest_frequency:
+                        column[n]= 0
+                second_highest_frequency = max(column)
+                index2 = column.index(second_highest_frequency)
+                residue2 = aminos_dict[index2]
+                
+                secondary_residues.append(residue2)
+                secondary_frequencies.append(second_highest_frequency)
+                
+            elif highest_frequency==1:
+                secondary_residues.append(residue)
+                secondary_frequencies.append(highest_frequency)
+            
+#            for n,i in enumerate(column):
+#                if i == highest_frequency and highest_frequency != 1:
+#                    column[n] = 0 
+#            second_highest_frequency = max(column)
+#            index2 = column.index(second_highest_frequency)
+#            residue2 = aminos_dict[index2]
+            
+#            secondary_residues.append(residue2)
+#            secondary_frequencies.append(second_highest_frequency)
+#                elif i == highest_frequency and highest_frequency == 1:
+#                    secondary_residues.append(residue)
+#                    secondary_frequencies.append(highest_frequency)
+#                
+                    
         
+        frequencies = ['%.3f' % x for x in frequencies]
+        secondary_frequencies = ['%.3f' % x for x in secondary_frequencies]
+        
+        sys.stdout.write('\n'+"".join(primary_residues) + ',' + '\n') 
+        sys.stdout.write(",".join(str(x) for x in frequencies) + ',' +'\n')
+        
+        sys.stdout.write("".join(secondary_residues) + ',' + '\n') 
+        sys.stdout.write(",".join(str(x) for x in secondary_frequencies) +'\n')
+        
+    # Full profile         
     elif profile_type == 'full':
         for amino,row in zip(aminos_dict,profile_array):
             amino_value = aminos_dict[amino]
-            print(amino_value,row)
+            row = list(row)
+            row = ['%.3f' % x for x in row]
+            sys.stdout.write(" ".join(row))
             
-
+            sys.stdout.write( '\n' + amino_value +' '  + "".join(row))                
+            
+            
 #%%
 
-aminos = {'A':1,'C':2,'D':3,'E':4,'F':5,'G':6,'H':7,'I':8,'K':9,'L':10,
-                  'M':11,'N':12,'P':13,'Q':14,'R':15,'S':16,'T':17,'V':18,
-                  'W':19,'Y':20,'X':21}
-
-#%%
-my = [1,2,3,4]
-
+my = [1,2,3,4,4]            
+top = max(my)
+print(top)
 for n,i in enumerate(my):
-    if i == 1:
-        my[n] = 10
-        
-new = my.sort(reverse=True)
-
-
-
-print(my)
-print(new)
-
-#%%
-
-
-delta = [1,2,3,4,5]
-
-delta.sort(reverse = True)
-print(delta)
-t = delta[0]
-print(t)
+    if i == top:
+        my[n] = 0 
     
-        
+print(my)
+
+    
