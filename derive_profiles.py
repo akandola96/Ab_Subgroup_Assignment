@@ -472,20 +472,38 @@ with open(in_file,'r') as cinput:
   # Write profile
     if profile_type == '2line':
         primary_residues = []
+        secondary_residues = []
         frequencies = []
+        secondary_frequencies = []
         for column in profile_array.T:
             column = list(column)
-            frequency = max(column)
-            index = column.index(frequency)
+            highest_frequency = max(column)
+            index = column.index(highest_frequency)
             residue = aminos_dict[index]
             
             primary_residues.append(residue)
-            frequencies.append(frequency)
-    
-        
-        
+            frequencies.append(highest_frequency)
+            
+            for n,i in enumerate(column):
+                if i == highest_frequency and highest_frequency != 1:
+                    column[n] = 0 
+                    second_highest_frequency = max(column)
+                    index2 = column.index(second_highest_frequency)
+                    residue2 = aminos_dict[index2]
+                    
+                    secondary_residues.append(residue2)
+                    secondary_frequencies.append(second_highest_frequency)
+                elif i == highest_frequency and highest_frequency == 1:
+                    secondary_residues.append(residue)
+                    secondary_frequencies.append(highest_frequency)
+                
+                    
+            
         print(primary_residues)
         print(frequencies)
+        print(secondary_residues)
+        print(secondary_frequencies)
+     
         
     elif profile_type == 'full':
         for amino,row in zip(aminos_dict,profile_array):
@@ -498,5 +516,29 @@ with open(in_file,'r') as cinput:
 aminos = {'A':1,'C':2,'D':3,'E':4,'F':5,'G':6,'H':7,'I':8,'K':9,'L':10,
                   'M':11,'N':12,'P':13,'Q':14,'R':15,'S':16,'T':17,'V':18,
                   'W':19,'Y':20,'X':21}
+
+#%%
+my = [1,2,3,4]
+
+for n,i in enumerate(my):
+    if i == 1:
+        my[n] = 10
+        
+new = my.sort(reverse=True)
+
+
+
+print(my)
+print(new)
+
+#%%
+
+
+delta = [1,2,3,4,5]
+
+delta.sort(reverse = True)
+print(delta)
+t = delta[0]
+print(t)
     
         
