@@ -422,8 +422,6 @@ def phrases(phrase,text):
     import re
     return re.search(r"\b{}\b".format(phrase), text, re.IGNORECASE) is not None
 
-            
-
 
 in_file = 't6_musculus_blout_queries.csv'
 query_subgroup = 'IGHV1'
@@ -472,7 +470,7 @@ with open(in_file,'r') as cinput:
         
  
   # Write profile
-    if profile_type is '2line':
+    if profile_type == '2line':
         primary_residues = []
         frequencies = []
         for column in profile_array.T:
@@ -489,29 +487,16 @@ with open(in_file,'r') as cinput:
         print(primary_residues)
         print(frequencies)
         
-    elif profile_type is 'full':
+    elif profile_type == 'full':
         for amino,row in zip(aminos_dict,profile_array):
             amino_value = aminos_dict[amino]
             print(amino_value,row)
             
-        
-        #%%
-for residue in amino_dict:
-    y = amino_dict[residue]
-    print(y)
-        
-#%%
-l = {'A':1,'B':2}        
-
-for x in l:
-    y = l[x]
-    print(y)
-
 
 #%%
 
 aminos = {'A':1,'C':2,'D':3,'E':4,'F':5,'G':6,'H':7,'I':8,'K':9,'L':10,
                   'M':11,'N':12,'P':13,'Q':14,'R':15,'S':16,'T':17,'V':18,
-                  'W':19,'Y':20,'X':21}S
+                  'W':19,'Y':20,'X':21}
     
         
