@@ -649,4 +649,4 @@ import numpy as np
 arr = [[1,2,3],[4,5,4]]
 arr = np.array(arr)
 i,j=np.where(arr==4)
-print(i,j)  
+x,y = np.where(arr.T==4)
