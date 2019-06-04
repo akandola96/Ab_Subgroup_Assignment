@@ -15,7 +15,7 @@ def master_derive_profiles(query_organism,freq_type, matrix_type):
         get_profiles(locus, 'blout_queries.csv', 'profiles.txt',query_organism,freq_type,matrix_type)
     
 
-#%%
+
 def phrases(phrase,text):
     """
     Summary:
@@ -32,9 +32,9 @@ def phrases(phrase,text):
     """    
     import re
     return re.search(r"\b{}\b".format(phrase), text, re.IGNORECASE) is not None
-#%%
 
-def determine_subgroups(in_file,organism,out_file):
+
+def determine_subgroups(in_file,organism):
     """
     Summary:
     Master function to determine subgroups to make profiles for.
@@ -50,20 +50,21 @@ def determine_subgroups(in_file,organism,out_file):
     Heavy, Lambda, Kappa all present in this dictionary.
     """
     import sys 
-    sys.stdout = open(out_file,'a+')
     
-    
+    sys.stdout=open('subgroup_dictionary.py','a+')
     loci = ['Heavy','Kappa','Lambda']
     subgroup_dict = {}
     # Get locus dictionary and append to overall dictionary
     for locus in loci:
         locus_dict = get_sentences(locus,in_file,organism) # Function call
-        subgroup_dict.update(locus_dict)     
+        subgroup_dict.update(locus_dict)  
     
-    print(organism, ' dictionary = ',subgroup_dict)
     
-
-#%%
+    dict_name = organism.lower()
+    dict_name = dict_name.replace(" ","_")  
+    dict_name = dict_name + '_dict'
+    print(dict_name,' = ',subgroup_dict)
+   
 def get_sentences(locus, in_file, organism):
     """
     Summary:
@@ -168,7 +169,7 @@ def get_numerics(locus,organism, in_file):
                         break
                         
         return numeric_list
-             
+#%%            
 def get_profiles(locus, infile, out_file,query_organism,freq_type,matrix_type):
     # Backup comment 
     """
@@ -192,7 +193,12 @@ def get_profiles(locus, infile, out_file,query_organism,freq_type,matrix_type):
     Adds formatting and subgroup titles.
     """    
     import sys 
+    import subgroup_dictionary
     sys.stdout = open(out_file,'a')
+    
+    dict_name = query_organism.lower()
+    dict_name = dict_name.replace(" ","_")  
+    dict_name = dict_name + '_dict'
     
     subgroups = get_numerics(locus,query_organism,infile) 
     organism = query_organism    
@@ -223,7 +229,7 @@ def get_profiles(locus, infile, out_file,query_organism,freq_type,matrix_type):
             print('ERROR OCCURRED')
             print(e)            
 
-          
+#%%         
 def derive_profiles_2line(in_file, query_subgroup,freq_type,out_file):      
     """
     Summary:
