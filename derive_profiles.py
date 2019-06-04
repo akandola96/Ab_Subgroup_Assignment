@@ -34,7 +34,7 @@ def phrases(phrase,text):
     return re.search(r"\b{}\b".format(phrase), text, re.IGNORECASE) is not None
 #%%
 
-def determine_subgroups(in_file,organism):
+def determine_subgroups(in_file,organism,out_file):
     """
     Summary:
     Master function to determine subgroups to make profiles for.
@@ -49,14 +49,21 @@ def determine_subgroups(in_file,organism):
     {Mus Musculus Heavy Chain 1:IGHV1, Mus musculus Heavy Chain 2:IGHV2}.
     Heavy, Lambda, Kappa all present in this dictionary.
     """
+    import sys 
+    sys.stdout = open(out_file,'a+')
+    
+    
     loci = ['Heavy','Kappa','Lambda']
     subgroup_dict = {}
     # Get locus dictionary and append to overall dictionary
     for locus in loci:
         locus_dict = get_sentences(locus,in_file,organism) # Function call
         subgroup_dict.update(locus_dict)     
-    return subgroup_dict        # Makes dict available for other functions
+    
+    print(organism, ' dictionary = ',subgroup_dict)
+    
 
+#%%
 def get_sentences(locus, in_file, organism):
     """
     Summary:
