@@ -157,15 +157,13 @@ def make_final_results(in_file,blout_file,organism,out_file):
             print(seqs_scores_row + ',' + blout_row + ',' + organism)
                                  
 
-def check_assignment(in_file,blout_queries_file,organism,out_file):
+def check_assignment(in_file,organism,out_file):
     """
     Summary:
     Determines the MCC of each subgroup and outputs to file.
     
     Args:    
     in_file = full results file (.csv)
-    blout_queries_file = blout_queries_file (.csv)
-            Used to generate subgroup dictionary
     organism = current query organism (str)
     out_file = named file to contain results of MCC calculations (.txt)
     
@@ -181,6 +179,7 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
     """   
     import csv
     import sys
+    import subgroup_dictionary
     sys.stdout = open(out_file,'a+')
     with open(in_file) as csv_in:
         reader = csv.reader(csv_in)
@@ -192,11 +191,15 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
         av_MCC_count = 0
         MCC_list = []
     
-        # Determine subgroup names to evaluate
-        my_dict = determine_subgroups(blout_queries_file,organism)
+        # Determine subgroup names to evaluate        
+        if organism == 'mus musculus':
+            subgroups = subgroup_dictionary.mus_musculus_dict
+        elif organism == 'homo sapiens':
+            subgroups = subgroup_dictionary.homo_sapiens_dict
+            
 
         # Iterate through subgroups using dictionary      
-        for x in my_dict: 
+        for subgroup in subgroups: 
             csv_in.seek(0) #remove
             TP = 0 
             FP = 0 
@@ -205,7 +208,7 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
             misc = 0
             
 
-            alt_x = my_dict[x] + 'S'   # IGHV1S. Deals with intrasubgroup subgs
+            intra_subgroup = subgroups[x] + 'S'   # IGHV1S. Deals with intrasubgroup subgs
             
             for row in reader:            
                 prediction = str(row[1])  
@@ -215,45 +218,45 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
                 # Assign entry to confusion matrix variable
                 
                 # If Heavy 1 is prediction and IGHV1 is actual TP + 1
-                if phrases(x, prediction) == True and \
-                phrases(my_dict[x],actual) == True:
+                if phrases(subgroup, prediction) == True and \
+                phrases(subgroups[subgroup],actual) == True:
                     TP +=1 
                     
                 # If Heavy 1 is prediction and IGHV1S1 is actual TP + 1
-                elif phrases(x, prediction) == True and \
-                alt_x in actual:
+                elif phrases(subgroup, prediction) == True and \
+                intra_subgroup in actual:
                     TP +=1 
                  
                     
                  # If Heavy 1 not prediction and IGHV1 is actual FN + 1   
-                elif phrases(x, prediction) == False and \
-                phrases(my_dict[x],actual) == True:
+                elif phrases(subgroup, prediction) == False and \
+                phrases(subgroups[subgroup],actual) == True:
                     FN +=1
                     
                 # If Heavy 1 not prediction and IGHV1S1 is actual FN + 1
-                elif phrases(x, prediction) == False and \
-                alt_x in actual:
+                elif phrases(subgroup, prediction) == False and \
+                intra_subgroup in actual:
                     FN +=1
                 
         
                 # if Heavy 1 is prediction and IGHV1 is not actual FP + 1
-                elif phrases(x,prediction) == True and \
-                phrases(my_dict[x],actual) == False:
+                elif phrases(subgroup,prediction) == True and \
+                phrases(subgroups[subgroup],actual) == False:
                     FP +=1
                     
                 # If Heavy 1 is prediction and IGHV1S1 is not actual FP + 1    
-                elif phrases(x,prediction) == True and \
-                alt_x not in actual:
+                elif phrases(subgroup,prediction) == True and \
+                intra_subgroup not in actual:
                     FP +=1
                     
                     
                 # If Heavy 1 is not prediction and IGHV1 is not actual TN + 1
-                elif phrases(x,prediction) == False and \
-                phrases(my_dict[x],actual) == False:
+                elif phrases(subgroup,prediction) == False and \
+                phrases(subgroups[subgroup],actual) == False:
                     TN +=1     
                 # If Heavy 1 is not prediction and IGHV1S1 is not actual TN+1
-                elif phrases(x,prediction) == False and \
-                alt_x not in actual:
+                elif phrases(subgroup,prediction) == False and \
+                intra_subgroup not in actual:
                     TN +=1     
                     
                     
@@ -277,11 +280,11 @@ def check_assignment(in_file,blout_queries_file,organism,out_file):
                 av_MCC_num += MCC
                 av_MCC_count +=1
                 MCC_list.append(MCC)
-                print(x, ',' ,MCC, ',', TPR, ',',TNR, ',',PPV,',',TP,',',FN,','
+                print(subgroup, ',' ,MCC, ',', TPR, ',',TNR, ',',PPV,',',TP,',',FN,','
                 ,FP,',',TN)
             except Exception as e:
                 MCC = 'N/A'
-                print(x, MCC, 'Error:', e)
+                print(subgroup, MCC, 'Error:', e)
                            
         average_MCC = av_MCC_num/av_MCC_count 
         average_MCC = str(average_MCC)
