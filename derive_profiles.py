@@ -169,15 +169,14 @@ def get_numerics(locus,organism, in_file):
                         break
                         
         return numeric_list
-#%%            
-def get_profiles(locus, infile, out_file,query_organism,freq_type,matrix_type):
+    
+def get_profiles(infile, out_file,query_organism,freq_type,matrix_type):
     # Backup comment 
     """
     Summary:
     Master function to generate the profiles of a locus' subgroups.
     
     Args:    
-    locus = 'Heavy', 'Lambda' or 'Kappa'. Func has to be run for each one (str).
     infile = file containing query seqeunces matched to their BLAST record 
             (blout_queries file) (.csv)
     out_file = named output file cotnaining subgroup profiles (.txt)
@@ -200,28 +199,36 @@ def get_profiles(locus, infile, out_file,query_organism,freq_type,matrix_type):
         subgroups = subgroup_dictionary.mus_musculus_dict
     elif query_organism == 'Homo sapiens':
         subgroups = subgroup_dictionary.homo_sapiens_dict
-    elif query_organism = 'Macaca mulatta'
-    
-    subgroups = get_numerics(locus,query_organism,infile) 
-    organism = query_organism    
-    for subgroup in subgroups:             
-        chain_type = locus       
-        upper_chain_type = chain_type.upper()
-        subg_num = subgroup[4:]             # Get subgroup number 
+    elif query_organism == 'Macaca mulatta':
+        subgroups = subgroup_dictionary.macaca_mulatta_dict
+        
+
+    chain_type = '' 
+    for subgroup in subgroups:  
+        subgroup_code = subgroups[subgroup]
+        if 'H' in subgroup_code:
+            chain_type == 'Heavy'
+        elif 'K' in subgroup_code:
+            chain_type = 'Kappa'
+        elif 'L' in subgroup_code:
+            chain_type = 'Lambda'
+        
+        
+        chain_type = chain_type.upper()
+        subg_num = subgroup_code[4:]             # Get subgroup number 
         try:
             # Write titles
-            sys.stdout.write('>' + upper_chain_type + ',' + '  ' 
+            sys.stdout.write('>' + chain_type + ',' + '  ' 
                              + subg_num +',' + '\n')
-            sys.stdout.write('"' + organism + ' ' + chain_type + ' ' 
-                             + 'Chain' + ' ' + subg_num + '"' + ',')
+            sys.stdout.write('"' + subgroup +'"' + ',')
             
             # Get profiles
             if matrix_type == '2line':
-                derive_profiles_2line(infile,subgroup,matrix_t)
+                derive_profiles_2line(infile,subgroup_code,freq_type,out_file)
                 
                 
             elif matrix_type == 'full':
-                full_deriver(infile,subgroup,matrix_type)
+                derive_profiles_full(infile,subgroup_code,freq_type,out_file)
             
             # Write terminator
             sys.stdout.write('//' + '\n')
@@ -229,9 +236,10 @@ def get_profiles(locus, infile, out_file,query_organism,freq_type,matrix_type):
         # Error catcher
         except Exception as e:
             print('ERROR OCCURRED')
-            print(e)            
-
-#%%         
+            print(e)   
+                 
+#%%            
+       
 def derive_profiles_2line(in_file, query_subgroup,freq_type,out_file):      
     """
     Summary:
@@ -422,23 +430,8 @@ def derive_profiles_full(in_file, query_subgroup,freq_type,out_file):
                 sys.stdout.write(value + ' ')            
             sys.stdout.write('\n')  
 #%%
-            
-def phrases(phrase,text):
-    """
-    Summary:
-    Alternative to using 'in', which is non-specific.
-    
-    Args:
-    phrase = text to find (str)
-    text = text to search in (str)
-    
-    Desc:    
-    Returns true if EXACT match between strings is found, false oteherwise. 
-    Case insensitive.
-    Can differentiate between IGHV1 and IGHV10, which 'in' cannot.
-    """    
-    import re
-    return re.search(r"\b{}\b".format(phrase), text, re.IGNORECASE) is not None
+""" Trying to create a functin that could derive either type of profile
+    Currently unsuccessful"""
 
 def full_deriver(in_file, query_subgroup, profile_type):
     import numpy as np
