@@ -51,7 +51,7 @@ def determine_subgroups(in_file,organism):
     """
     import sys 
     
-    sys.stdout=open('subgroup_dictionary.py','a+')
+    sys.stdout=open('subgroup_dictionary.py','a+') # Creates file to hold dicts
     loci = ['Heavy','Kappa','Lambda']
     subgroup_dict = {}
     # Get locus dictionary and append to overall dictionary
@@ -196,9 +196,11 @@ def get_profiles(locus, infile, out_file,query_organism,freq_type,matrix_type):
     import subgroup_dictionary
     sys.stdout = open(out_file,'a')
     
-    dict_name = query_organism.lower()
-    dict_name = dict_name.replace(" ","_")  
-    dict_name = dict_name + '_dict'
+    if query_organism == 'Mus musculus':
+        subgroups = subgroup_dictionary.mus_musculus_dict
+    elif query_organism == 'Homo sapiens':
+        subgroups = subgroup_dictionary.homo_sapiens_dict
+    elif query_organism = 'Macaca mulatta'
     
     subgroups = get_numerics(locus,query_organism,infile) 
     organism = query_organism    
@@ -215,7 +217,7 @@ def get_profiles(locus, infile, out_file,query_organism,freq_type,matrix_type):
             
             # Get profiles
             if matrix_type == '2line':
-                full_deriver(infile,subgroup,matrix_type)
+                derive_profiles_2line(infile,subgroup,matrix_t)
                 
                 
             elif matrix_type == 'full':
