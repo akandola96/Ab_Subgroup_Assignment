@@ -112,7 +112,7 @@ def original_make_fasta(input_file,output_file_name):
         elif row[0] != '>':
             sys.stdout.write(row[0])
          
-def make_fasta(input_file,version,output_file_name):
+def make_fasta_training(input_file,version,output_file_name):
     """
     Summary:
     Converts extracted abYsis data into FASTA format. Two versions:
