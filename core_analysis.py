@@ -157,7 +157,7 @@ def make_final_results(in_file,blout_file,organism,out_file):
             print(seqs_scores_row + ',' + blout_row + ',' + organism)
                                  
 
-def check_assignment(in_file,organism,out_file):
+def check_assignment_single_species(in_file,organism,out_file):
     """
     Summary:
     Determines the MCC of each subgroup and outputs to file.
@@ -196,6 +196,7 @@ def check_assignment(in_file,organism,out_file):
             subgroups = subgroup_dictionary.mus_musculus_dict
         elif organism == 'homo sapiens':
             subgroups = subgroup_dictionary.homo_sapiens_dict
+        #cont...
             
 
         # Iterate through subgroups using dictionary      
@@ -292,5 +293,130 @@ def check_assignment(in_file,organism,out_file):
 
         # Makes MCC values available for other functions
         return MCC_list
+
+    
+def check_assignment_multi_species(in_file,out_file):
+    import csv
+    import sys
+    import subgroup_dictionary
+    sys.stdout = open(out_file,'a+')
+    with open(in_file) as csv_in:
+        reader = csv.reader(csv_in)
+        
+        print('Subgroup,','MCC,','TPR,','TNR,','PPV,' , 'TP,','FN,','FP,',
+        'TN')
+            
+        av_MCC_num = 0
+        av_MCC_count = 0
+        MCC_list = []
+    
+        # Determine subgroup names to evaluate
+        mus_musculus_dict = subgroup_dictionary.mus_musculus_dict
+        homo_sapiens_dict = subgroup_dictionary.homo_sapiens_dict 
+        oncorhynchus_mykiss_dict = subgroup_dictionary.oncorhynchus_mykiss_dict
+        oryctolagus_cuniculus_dict=subgroup_dictionary.oryctolagus_cuniculus_dict
+        macaca_mulatta_dict = subgroup_dictionary.macaca_mulatta_dict
+        
+        subgroups = {**mus_musculus_dict,**homo_sapiens_dict,**oncorhynchus_mykiss_dict,**oryctolagus_cuniculus_dict,**macaca_mulatta_dict}
+            
+
+        # Iterate through subgroups using dictionary     
+        #not intuitive for multi species. Need to determine the species on a per row basis. 
+        #Alternatively, could determine how many query sequences there are for each species and base it on that. In that case, dont have to redefine which dictionary to use for each subgroup?
+        for subgroup in subgroups: 
+            csv_in.seek(0) #remove
+            TP = 0 
+            FP = 0 
+            FN = 0 
+            TN = 0 
+            misc = 0
+            
+
+            intra_subgroup = subgroups[subgroup] + 'S'   # IGHV1S. Deals with intrasubgroup subgs
+            
+            for row in reader:            
+                prediction = str(row[1])  
+                actual = str(row[6])
+                organism = str(row[6])
+            
+                
+                # Assign entry to confusion matrix variable
+                
+                # If Heavy 1 is prediction and IGHV1 is actual TP + 1
+                if phrases(subgroup, prediction) == True and \
+                phrases(subgroups[subgroup],actual) == True:
+                    TP +=1 
+                    
+                # If Heavy 1 is prediction and IGHV1S1 is actual TP + 1
+                elif phrases(subgroup, prediction) == True and \
+                intra_subgroup in actual:
+                    TP +=1 
+                 
+                    
+                 # If Heavy 1 not prediction and IGHV1 is actual FN + 1   
+                elif phrases(subgroup, prediction) == False and \
+                phrases(subgroups[subgroup],actual) == True:
+                    FN +=1
+                    
+                # If Heavy 1 not prediction and IGHV1S1 is actual FN + 1
+                elif phrases(subgroup, prediction) == False and \
+                intra_subgroup in actual:
+                    FN +=1
+                
+        
+                # if Heavy 1 is prediction and IGHV1 is not actual FP + 1
+                elif phrases(subgroup,prediction) == True and \
+                phrases(subgroups[subgroup],actual) == False:
+                    FP +=1
+                    
+                # If Heavy 1 is prediction and IGHV1S1 is not actual FP + 1    
+                elif phrases(subgroup,prediction) == True and \
+                intra_subgroup not in actual:
+                    FP +=1
+                    
+                    
+                # If Heavy 1 is not prediction and IGHV1 is not actual TN + 1
+                elif phrases(subgroup,prediction) == False and \
+                phrases(subgroups[subgroup],actual) == False:
+                    TN +=1     
+                # If Heavy 1 is not prediction and IGHV1S1 is not actual TN+1
+                elif phrases(subgroup,prediction) == False and \
+                intra_subgroup not in actual:
+                    TN +=1     
+                    
+                    
+                #Should always be 0
+                else:
+                    misc +=1
+                 
+            # Assess performance
+            # Try/except used to catch division by 0 (can sometimes occur)
+            try:
+                MCC = float((TP * TN) - (FP * FN))/ float(((TP+FP)*(TP+FN)*(TN+FP)*
+                           (TN+FN)) ** 0.5)
+                MCC = round(MCC,5)
+                
+                #Other performance measures                         
+                TPR = round((TP/(TP+FN)),5)
+                TNR = round((TN/(TN+FP)),5)
+                PPV = round((TP/(TP+FP)),5)
+                                
+                # Average calc variables
+                av_MCC_num += MCC
+                av_MCC_count +=1
+                MCC_list.append(MCC)
+                print(subgroup, ',' ,MCC, ',', TPR, ',',TNR, ',',PPV,',',TP,',',FN,','
+                ,FP,',',TN)
+            except Exception as e:
+                MCC = 'N/A'
+                print(subgroup, MCC, 'Error:', e)
+                           
+        average_MCC = av_MCC_num/av_MCC_count 
+        average_MCC = str(average_MCC)
+        print('Simple MCC Average:',',',average_MCC) 
+
+        # Makes MCC values available for other functions
+        return MCC_list
+    
     
     
