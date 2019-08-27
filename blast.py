@@ -1,4 +1,4 @@
-#%%
+
 def blast_steps(queries_file,ref_seq_file,organism,db_name):
     
     """
