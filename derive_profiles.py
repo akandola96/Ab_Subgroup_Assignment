@@ -1,21 +1,4 @@
 #%%
-def master_derive_profiles(query_organism,freq_type, matrix_type):
-    """
-    Summary:
-    Master function to derive subgroup profiles
-    
-    Args:
-    query_organism = query organism (str)
-    freq_type = 'log' OR 'normal' (str)
-    matrix_type = '2line' OR 'full' (str)
-    """
-    
-    loci = ['Heavy','Kappa','Lambda']
-    for locus in loci:
-        get_profiles(locus, 'blout_queries.csv', 'profiles.txt',query_organism,freq_type,matrix_type)
-    
-
-
 def phrases(phrase,text):
     """
     Summary:
@@ -238,8 +221,7 @@ def get_profiles(infile, out_file,query_organism,freq_type,matrix_type):
             print('ERROR OCCURRED')
             print(e)   
                  
-#%%            
-       
+   
 def derive_profiles_2line(in_file, query_subgroup,freq_type,out_file):      
     """
     Summary:
